@@ -1,89 +1,100 @@
-
 :root {
-	--prime-green: hsl(114.7,100%,68.7%);
+ --prime-green: hsl(114.7, 100%, 68.7%);
 }
 
 @layer layout {
-	.nav_arr {
-		overflow: scroll;
-		padding-inline: 0.7rem;
-		padding-block:1rem;
-		margin-inline: .7rem;
-		border-radius: 10px;
-		display: grid;
-		grid-template-areas: 
-		"dateToday recent recent"
-		"dateToday userName toggle";
-		grid-template-columns:  auto 4fr 40px;
-		gap: 0.5em;
-	  grid-row-gap: 0.8em;
-	  background-color: hsl(163.2,0%,15.2%);
-	  
-}
-
-li.currentDay {
+ @media (orientation: landscape) or (max-width: 500px)  {
+  .notice_board {
+   position: sticky;
+   top: 0%;
+   z-index: 50;
+   > * {
+    filter: drop-shadow(0px 20px 5px hsla(163.2, 0%, 0%, 0.487) )
+   }
+  }
+ }
+ 
+ .nav_arr {
+  overflow: scroll;
+  padding-inline: 0.7em;
+  padding-block: 1em;
+  margin-inline: .7em;
+  margin-block: 1.5em;
+  border-radius: 10px;
+  display: grid;
+  grid-template-areas:
+   "dateToday recent recent"
+   "dateToday userName toggle";
+  grid-template-columns: auto 4fr 40px;
+  gap: 0.5em;
+  grid-row-gap: 0.8em;
+  background-color: hsl(163.2, 0%, 15.2%);
+ /* filter: drop-shadow(0px 20px 5px hsla(163.2, 0%, 0%, 0.487) );*/
+ }
+ 
+ li.currentDay {
   grid-area: dateToday;
   padding-block: 1.2em;
-	padding-inline: 0.8em;
-	gap: 0.5em;
-	background-color: hsl(199.2,0%,4.2%);
-	border-radius: 1em; 
+  padding-inline: 0.8em;
+  gap: 0.5em;
+  background-color: hsl(199.2, 0%, 4.2%);
+  border-radius: 1em;
+ }
+ 
+ 
+ .dateTask_item {
+  padding-block: 0.8em;
+  padding-inline: 0.4em;
+  background-color: hsl(210.6, 7.1%, 9.2%);
+  align-items: start;
+  justify-content: center;
+  gap: 0.3em;
+  border-radius: 5px;
+  white-space: nowrap;
+ }
+ 
 }
 
 
-.dateTask_item {
-	padding-block: 0.8rem;
-	padding-inline: 0.4rem;
-	background-color: hsl(210.6,7.1%,9.2%);
-	align-items: start;
-	justify-content: center;
-	gap: 0.3rem;
-	border-radius: 5px; 
-	white-space: nowrap;
-}
-
-}
-
-
-.date-no  {
-	font-size: 1em;
-	font-weight: 600;
-	letter-spacing: 1.5px;
-	color: hsl(178.9,6.1%,67.7%);
+.date-no {
+ font-size: 1em;
+ font-weight: 600;
+ letter-spacing: 1.5px;
+ color: hsl(178.9, 6.1%, 67.7%);
 }
 
 .month_sub {
-	font-size: 0.5em;
-	font-weight: 300;
-	color: hsl(178.9,6.1%,67.7%);
+ font-size: 0.5em;
+ font-weight: 300;
+ color: hsl(178.9, 6.1%, 67.7%);
 }
 
 .currentDay .date-no {
-	color: var(--prime-green);
-	font-size: 1.2em;
-	font-family: Times New Roman;
+ color: var(--prime-green);
+ font-size: 1.2em;
+ font-family: Times New Roman;
 }
 
 .date-day {
-	font-size: 0.8em;
-	font-weight: 350;
-	color: hsl(133.5,3.1%,64.7%);
+ font-size: 0.8em;
+ font-weight: 350;
+ color: hsl(133.5, 3.1%, 64.7%);
 }
 
-.currentDay .date-day  {
-	color: hsl(0,0%,79.7%);
-	translate: 0;
+.currentDay .date-day {
+ color: hsl(0, 0%, 79.7%);
+ translate: 0;
 }
 
 .task_active {
-	font-size: 0.6em;
-	color: hsl(210.2,0%,62.2%);
-	opacity: 0.5;
+ font-size: 0.6em;
+ color: hsl(210.2, 0%, 62.2%);
+ opacity: 0.5;
 }
 
 .upcoming {
  grid-area: recent;
- gap: 0.3rem;
+ gap: 0.3em;
  overflow: scroll;
 }
 
@@ -94,7 +105,7 @@ li.currentDay {
 }
 
 .UserName {
- color: hsl(208.2,94.5%,63%);
+ color: hsl(208.2, 94.5%, 63%);
  font-size: 0.55em;
  overflow: hidden;
  white-space: nowrap;
@@ -102,25 +113,25 @@ li.currentDay {
 }
 
 .notify_year {
-	 font-size: 0.5em;
-	 background-color: hsl(163.2,0%,0%);
-	 border-radius: 6px;
-	 padding-inline: 0.5em;
-	 padding-block: 0.5em;
-	 color: white;
-	 letter-spacing: .5px;
-	 position: relative;
+ font-size: 0.5em;
+ background-color: hsl(163.2, 0%, 0%);
+ border-radius: 6px;
+ padding-inline: 0.5em;
+ padding-block: 0.5em;
+ color: white;
+ letter-spacing: .5px;
+ position: relative;
 }
 
 .no_task {
-	position: absolute;
-	top: -15%;
-	right: 4%;
-	width: clamp(8px , 2vw, 10px);
-	height: clamp(8px , 2vw, 10px);
-	background-color: var(--prime-green);
-	border-radius: 100px;
-	
+ position: absolute;
+ top: -15%;
+ right: 4%;
+ width: clamp(8px, 2vw, 10px);
+ height: clamp(8px, 2vw, 10px);
+ background-color: var(--prime-green);
+ border-radius: 100px;
+ 
 }
 
 .toggle {
@@ -132,66 +143,66 @@ li.currentDay {
  padding-block: .3em;
  padding-inline: .3em;
  border-radius: 100px;
- fill: hsla(129.3,100%,50.7%,0.507);
+ fill: hsla(129.3, 100%, 50.7%, 0.507);
 }
 
 @media (min-width: 900px) {
-	
-	.nav_arr {
-		padding-inline: 1rem;
-		padding-block: 1.5rem;
-		display: grid;
-		grid-template-areas: 
-		"dateToday userName toggle"
-		"dateToday recent recent";
-		grid-template-columns: minmax(200px, auto) 4fr 40px;
-		gap: 1rem;
-		border-radius: 0;
-	}
-	
-	li.currentDay {
-	  grid-area: dateToday;
-	  padding-block: 1.5rem;
-		padding-inline: 1rem;
-		gap: 0.5rem;
-		background-color: hsl(199.2,0%,4.2%);
-		border-radius: 12px; 
-	}
-	
-	.dateTask_item {
-		padding-block: 1.2rem;
-		padding-inline: 0.8rem;
-		background-color: hsl(210.6,7.1%,9.2%);
-		align-items: start;
-		justify-content: center;
-		gap: 1rem;
-		border-radius: 5px; 
-		white-space: nowrap;
-	}
-	
-	
-	.upcoming {
-	 grid-area: recent;
-	 gap: 1rem;
-	 
-	 > .dateTask_item {
-			flex: 0 1 100px;
-		}
-	}
-	
-	.side {
-	 grid-area: userName;
-	 gap: 1em;
-	 font-size: 1.095em;
-	}
-	
-	.currentDay .date-no {
-		font-size: 2.8em;
-	}
-	
-	.no_task {
-		top: -20%;
-		right: -5%;
-		
-	}
+ 
+ .nav_arr {
+  padding-inline: 1em;
+  padding-block: 1.5em;
+  display: grid;
+  grid-template-areas:
+   "dateToday userName toggle"
+   "dateToday recent recent";
+  grid-template-columns: minmax(200px, auto) 4fr 40px;
+  gap: 1em;
+  border-radius: 0;
+ }
+ 
+ li.currentDay {
+  grid-area: dateToday;
+  padding-block: 1.5em;
+  padding-inline: 1em;
+  gap: 0.5em;
+  background-color: hsl(199.2, 0%, 4.2%);
+  border-radius: 12px;
+ }
+ 
+ .dateTask_item {
+  padding-block: 1.2em;
+  padding-inline: 0.8em;
+  background-color: hsl(210.6, 7.1%, 9.2%);
+  align-items: start;
+  justify-content: center;
+  gap: 1em;
+  border-radius: 5px;
+  white-space: nowrap;
+ }
+ 
+ 
+ .upcoming {
+  grid-area: recent;
+  gap: 1em;
+  
+  >.dateTask_item {
+   flex: 0 1 100px;
+  }
+ }
+ 
+ .side {
+  grid-area: userName;
+  gap: 1em;
+  font-size: 1.095em;
+ }
+ 
+ .currentDay .date-no {
+  font-size: 2.8em;
+ }
+ 
+ .no_task {
+  top: -20%;
+  right: -5%;
+  
+ }
 }

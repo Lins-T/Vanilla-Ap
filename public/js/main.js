@@ -1,154 +1,195 @@
-//import theme from './modules/task_layout.js';
-import calender_pick, { inputsClear, setDateTime, arrCargo } from './modules/calender_picker-main.js';
-import { arrCheck as thu, showToggle, intoView, timeArray_clear } from './modules/dev_module2.js';
-import { timeArrray } from './modules/dev_module1.js';
-//theme()
-let addT_window = false;
+import event_Toggle, { active_SHOWN, label_event } from './modules/dev_module1.js'
 
-document.querySelector('body').addEventListener('click', btn => {
- if (btn.target.classList.contains('menuHam')) {
-  showToggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
- }
+let clicks = {
+ menuHam: document.querySelectorAll('[data-menu]'),
+ footbar: document.querySelector('.foot_taskBar'),
+ taskDialog: document.querySelector('.addTask_window'),
+ bool: false,
+ sec_bool: false,
+ hold: [],
+ label_list: [],
+ priority_list: [],
+ time_bool: false,
 
- if (btn.target.classList.contains('add-task')) {
-  showToggle('add', btn.target.dataset.toggleName, btn.target.dataset.target, 'taskWindow_unactive')
-  btn.target.disabled = true;
-   //addTask_windowClear()
-   // inputsClear()
-   //resetFxn()
- }
+ description: document.querySelector('.description'),
+ due: document.querySelector('#due'),
+ labelChoice: document.querySelector('.label_choice'),
+ priority_btn: undefined,
+ priorityChoice: document.querySelector('.priority_choice'),
+ side_btn: [],
+ footbTN_Nav: Array.from(document.querySelectorAll('[data-foot-btn]')),
+ taskContainer: document.querySelector('[data-task-container]'),
 
-})
+ click_event() {
+  const add_task = this.footbar.querySelector('[data-primary')
+  //Menu
+  this.menuHam.forEach(member => {
+   member.addEventListener('click', btn => {
+    event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
+    this.bool = true;
+   })
+  })
 
-function _activeTime() {
- let activeTime = Array.from(document.querySelectorAll('.active-time'));
- //activeTime[0].scrollIntoView({ behavior: 'smooth' })
- //activeTime[1].scrollIntoView({ behavior: 'smooth' })
- activeTime[0].parentElement.scrollBy(9 * 30, 0)
- activeTime[1].parentElement.scrollBy(-1000, 0)
- console.log(activeTime)
-}
+  // footbar or taskbar
+  let footbTN_Nav = this.footbTN_Nav.map(member => member.firstElementChild)
 
-let numTimes = 0;
-let taskINdex = 0;
-let clr = false
-document.querySelector('.addTask_window').addEventListener('click', btn => {
- if (btn.target.id === 'due') {
-  calender_pick()
-  numTimes += 1
+  this.footbar.addEventListener('click', btn => {
+   if (btn.target.hasAttribute('data-primary')) {
+    event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
+    //this.secondaryAction(this.menuHam, this.bool)
+    this.priority_btn = this.taskDialog.querySelector('[data-priority]')
+    btn.target.disabled = true
+   }
 
-  if (numTimes === 1) {
-   resetFxn()
-   _activeTime()
-  } else if (numTimes >= 1) {
-   resetFxn.disabled
-   _activeTime()
+   /**
+      if (btn.target.hasAttribute('data-foot-btn')) {
+      active_SHOWN(footbTN_Nav, 'current')
+      btn.target.firstElementChild.classList.add('current')
+      }
+   **/
+  })
+
+  //ADDtask dialog
+  this.taskDialog.addEventListener('click', btn => {
+   if (btn.target.hasAttribute('data-primary')) {
+    this.data_setting()
+    defaults.call_def()
+    this.auxiliaryAction()
+    this.field_reset()
+    label_event.randzevou()
+    
+    event_Toggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target)
+    add_task.disabled = false
+   }
+
+   if (btn.target.hasAttribute('data-secondary')) {
+    if (this.time_bool) {
+     defaults.call_def()
+    }
+    event_Toggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target)
+    this.auxiliaryAction()
+    this.field_reset()
+    label_event.randzevou()
+    add_task.disabled = false
+   }
+
+   if (btn.target.hasAttribute('data-setter-date')) {
+    setTimeout(function () {
+     event_Toggle('add', btn.target.dataset.toggleName, btn.target.dataset.target)
+     event_Toggle('remove', 'add_on', btn.target.dataset.target)
+    }, 200);
+    this.time_bool = false
+   }
+
+   if (btn.target.hasAttribute('data-priority')) {
+    this.sec_bool = true;
+    event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
+    this.hold.push(['remove', btn.target.dataset.toggleName, btn.target.dataset.target])
+
+    this.priority_list = Array.from(this.taskDialog.querySelector('.priority_list').children)
+    this.priority_list.forEach(member => {
+     member.addEventListener('click', btn => {
+      this.priorityChoice.value = btn.target.innerHTML
+     })
+    })
+   }
+
+   if (btn.target.hasAttribute('data-label')) {
+    this.sec_bool = true;
+    event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
+    let label_list = this.taskDialog.querySelector('.label_list')
+    this.hold.push(['remove', btn.target.dataset.toggleName, btn.target.dataset.target])
+   }
+  })
+ },
+
+ secondaryAction(entity, bool) {
+  if (bool) {
+   event_Toggle('remove', entity.dataset.toggleName, entity.dataset.target)
+   this.bool = false
+  }
+ },
+
+ auxiliaryAction() {
+  if (this.sec_bool) {
+   event_Toggle(...this.hold[0])
+   if (this.hold.length > 1) {
+    event_Toggle(...this.hold[1])
+   }
   }
 
-  if (clr) {
-   resetFxn()
-   clr = false
+  this.sec_bool = false
+ },
+
+ validate() {
+  const done_btn = this.taskDialog.querySelector('[data-primary]')
+
+  let arr1 =
+   [
+    this.description,
+   ];
+
+  if (this.side_btn.length !== 0) {
+   this.side_btn.forEach(member => arr1.push(member))
   }
- }
 
- if (btn.target.classList.contains('priority')) {
-  showToggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
- }
+  let arr2 =
+   [
+    this.description,
+    this.due,
+   ];
 
- if (btn.target.classList.contains('label')) {
-  showToggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
- }
+  arr1.forEach(member => {
+   member.addEventListener('blur', btn => {
+    let bool = arr2.some(member => member.value === '')
+    if (!bool) {
+     done_btn.disabled = false
+    } else {
+     done_btn.disabled = true
+    }
+   })
+  })
+ },
 
- if (btn.target.classList.contains('cancel')) {
-  showToggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target, 'taskWindow_active')
-  document.querySelector(`.${btn.target.dataset.ally}`).disabled = false;
-  //addTask_windowClear()
-  inputsClear()
-  resetFxn()
- }
+ field_reset() {
+  const done_btn = this.taskDialog.querySelector('[data-primary]')
+  done_btn.disabled = true
 
- if (btn.target.classList.contains('addTask')) {
-  task_Instance(taskINdex)
-  taskINdex += 1;
- }
-})
-
-const pickerFoot = document.querySelector('.dt_foot');
-pickerFoot.addEventListener('click', btn => {
- if (btn.target.classList.contains('set') || btn.target.classList.contains('calender_cancel')) {
-  showToggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target, 'calender_picker-acive')
- }
-
- if (btn.target.classList.contains('clear')) {
-  // setTimeout(function () {
-  showToggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target, 'calender_picker-acive')
-  //  }, 500);
-  clr = true;
-  inputsClear()
- }
- if (btn.target.classList.contains('set')) {
-  setDateTime()
-
- }
-})
-
-const calenderWindow = document.querySelector('.calender_window');
-function resetFxn() {
- intoView('hour_reset', timeArrray()[0][0], timeArrray()[0][1], timeArrray()[0][2], timeArrray()[0][3])
- timeArray_clear(timeArrray()[0][1], 'active-time', 'hour_reset', timeArrray()[0][0])
-
- intoView('minute_reset', timeArrray()[1][0], timeArrray()[1][1], timeArrray()[1][2], timeArrray()[1][3])
- timeArray_clear(timeArrray()[1][1], 'active-time', 'minute_reset', timeArrray()[1][0])
-
- intoView(23, arrCargo()[0], arrCargo()[1], arrCargo()[2], arrCargo()[3])
- timeArray_clear(arrCargo()[1], 'active-time', 23, arrCargo()[0])
-
- timeArray_clear(timeArrray()[2][0], timeArrray()[2][1], 1, 0, timeArrray()[2][2])
- timeArray_clear(timeArrray()[3][0], timeArrray()[3][1], 1, 0)
- timeArray_clear(timeArrray()[4][0], timeArrray()[4][1], 1, 0)
- //An Alternative for the time window to scroll intoview
- //500 is just a guess no.
- //calenderWindow.scrollTo(-500, 0)
-}
-
-let instances = [];
-const description = document.querySelector('.description'),
- dueDate = document.querySelector('#due'),
- _prChoice = document.querySelector('.priority_choice'),
- _llChoice = document.querySelector('.label_choice');
-let descriptionValue = description.value;
-
-function addTask_windowClear() {
- description.value = ''
- dueDate.value = ''
- _prChoice.value = ''
- _llChoice.value = ''
-}
+  let arr =
+   [this.description,
+   this.due,
+   this.priorityChoice,
+   this.labelChoice]
+  arr.forEach(member => member.value = '')
+ },
 
 
+ data_setting() {
+  Lay_out.description = this.description.value
+  Lay_out.date = this.due.value
+  Lay_out.priority = this.priorityChoice.value
+  Lay_out.label = this.labelChoice.value
+  Lay_out.duration = time_userDATA.duration
 
-
-
-class task {
- constructor(content, date, priority, label) {
-  this.content = content;
-  this.priority = priority;
-  this.label = label;
-  this.date = date;
- }
- edit(button) {
-  //button.addEventListener('click', ()=> {})
-  alert(this.content)
+  Lay_out.layout(this.taskContainer)
  }
 }
-description.addEventListener('keyup', () => {
- descriptionValue = description.value;
-})
 
-function task_Instance(index) {
- let store = [descriptionValue, dueDate.value, _prChoice.value, _llChoice.value]
+function check(field, arr, victim) {
+ field.addEventListener('blur', btn => {
+  let bool = arr.every(member => member.value !== '')
 
- let tsk = new task(...store)
- instances.push(tsk)
- instances[index].edit()
+  if (bool) {
+   victim.disabled = false
+   console.log('happening')
+  } else {
+   console.log('Nothing')
+  }
+ })
 }
+
+clicks.click_event()
+export default clicks
+
+import cargo, { defaults, time_userDATA } from './modules/calender_module1.js'
+import Lay_out from './modules/task_layout.js'

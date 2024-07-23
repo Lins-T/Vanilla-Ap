@@ -1,117 +1,838 @@
-//import { arrCheck as thu, intoView } from './dev_module2.js'
-/*
-const now = moment();
-const monthDays = document.querySelector('.calenderMonth_days')
-const Year = now.year();
-const currentYear = [];
-let activeMonth;
-let monthDates = [];
+import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
+import clicks from '../main.js'
+const now = moment()
 
-for (let i = 1; i <= 3; i++) {
- if (i === 1) {
-  monthSet(Year)
- } else if (i === 2) {
-  monthSet(Year + 1)
- } else if (i === 3) {
-  monthSet(Year + 2)
- }
-}
+async function _jsonFtch() {
+ let response = await fetch('../database.json')
+ let data = await response.json()
 
-function monthSet(year) {
- now.year(year)
+ await duePicker.retrieve_fxn(data)
 
- for (let i = 0; i < 12; i++) {
-  now.month(i)
-  calender(i, year)
- }
-}
-
-function calender(month, year) {
-
- let ul = document.createElement('ul');
-
- ul.classList.add(now.format('MMM'), 'monthDates', 'dc7_grid')
- ul.setAttribute('data-val', now.format('MMM'))
- ul.setAttribute('data-month-year', year)
-
- if (year === moment().year()) {
-  ul.classList.add('active-year')
- }
-
- if (now.month() === moment().month() && now.year() === moment().year()) {
-  ul.classList.add('active-time');
-  activeMonth = ul;
- }
- let last = now.daysInMonth();
-
- for (let m = 1; m <= last; m++) {
-  now.date(m)
-  let li = document.createElement('li')
-  li.classList.add('dates', 'date_item')
-  li.setAttribute('data-day-index', now.format('d'))
-  li.innerHTML = `${m}`
-  ul.appendChild(li)
-
-  if (m === 1) {
-   li.classList.add('one');
-   li.style = `grid-area: 1 / 1 / 1 / ${2 + Number.parseInt(li.dataset.dayIndex, 10)}`
-  }
-
-  monthDates.push(li)
-
-  if (m === last) {
-   currentYear.push(ul)
-  }
- }
-}
-
-export function calenderMonths() {
- currentYear.forEach(month => {
-  monthDays.appendChild(month)
-  if (month.classList.contains('active-time')) {
-   month.scrollIntoView({ bahavior: 'smooth' })
-  }
+ return new Promise((resolve, reject) => {
+  setTimeout(function () {
+   resolve(data)
+  }, 500);
  })
 }
+export { _jsonFtch }
 
-const monthSwitch = Array.from(document.querySelectorAll('.month_switch'));
-const ddd = document.querySelector('#ddd')
-const DDD = document.querySelector('#DDD')
+export let time_userDATA = {
+ hour: undefined,
+ minute: undefined,
+ meridean: 'am',
 
-const mmm = document.querySelector('#MMM')
-const mmm2 = document.querySelector('.setMonth')
-const mm2Content = document.querySelector('.setMonth_item');
+ date: undefined,
+ month: undefined,
+ year: 2024,
+ dueDate: undefined,
+ duration: undefined,
 
-const YYY1 = document.querySelector('#YYY')
-const YYY2 = document.querySelector('.setYear')
+ usrDATA() {
+  const setter = moment()
 
-let arr = [mmm, mm2Content, YYY1, YYY2]
+  let hour = Number.parseInt(this.hour.value)
+  let minute = Number.parseInt(this.minute.value)
 
-let index = currentYear.indexOf(activeMonth)
-intoView(23, index, currentYear, monthSwitch, arr)
+  if (this.meridean === 'pm') {
+   hour = Number.parseInt(this.hour.value) + 12
+  }
 
-currentYear.forEach(month => {
- let monthChildren = Array.from(month.children);
+  setter.hour(hour)
+  setter.minute(minute)
+  
+  if (this.date !== undefined && this.month !== undefined) {
+   setter.month(this.month)
+   setter.date(this.date)
+  } else {
+   setter.month(moment().month())
+   setter.date(moment().date() + 1)
+  }
+  setter.year(this.year)
+  
+  let from_now = setter.fromNow() 
+  this.duration = from_now
 
- monthChildren.forEach(date => {
-  date.addEventListener('click', btn => {
+  let dueDate = setter.format('ddd D MMM YYYY HH:mm a')
+  this.dueDate = dueDate
+ },
 
-   //  thu(monthChildren, 'active-dates')
-   thu(monthDates, 'active-dates')
-   date.classList.add('active-dates')
-   now.date(btn.target.textContent.trim())
-   now.month(month.dataset.val)
-   now.year(month.dataset.monthYear)
+}
 
-   ddd.innerHTML = ` ${now.format('ddd')} `
-   DDD.value = now.date()
-   mmm.value = ` ${now.format('MMM')} `;
-   mm2Content.innerHTML = ` ${now.format('MMM')} `;
+export const defaults = {
+ nav: [],
+ meridean: [],
+ main: [],
+ day_container: undefined,
+ day_containerContent: [],
+ year_btn: [],
+ month_bool: false,
+ month_btn: undefined,
+ monthList: undefined,
+ time_input: [],
+ input_fields: [],
 
-   YYY1.value = now.year();
-   YYY2.innerHTML = now.year();
+ reset() {
+  let arr =
+   [
+    this.nav,
+    this.meridean,
+    this.year_btn,
+
+   ]
+
+  arr.forEach(member => {
+   active_SHOWN(member, 'current')
+   event_Toggle('toggle', 'current', member[0])
   })
- })
-})
 
-*/
+  active_SHOWN(duePicker.hourList, hourProperties.def_show)
+  active_SHOWN(duePicker.minuteList, minuteProperties.def_show)
+
+  event_Toggle('add', hourProperties.def_show, duePicker.hourList[hourProperties.def])
+  event_Toggle('add', minuteProperties.def_show, duePicker.minuteList[minuteProperties.def])
+
+  this.time_input[0].value = '09'
+  this.time_input[1].value = '30'
+
+  hourProperties.index = 9
+  minuteProperties.index = 30
+
+  this.input_fields.forEach(member => {
+   member.value = ''
+  })
+
+  this.day_container.innerHTML = '';
+  this.day_containerContent.forEach(member => {
+   this.day_container.appendChild(member)
+  })
+  this.month_btn.disabled = true
+  if (this.month_bool) {
+   this.monthList.style = `display: none;`
+  }
+  this.main[0].scrollIntoView({ behavior: 'smooth' })
+ },
+
+ call_def() {
+  this.reset()
+  setTimeout(function () {
+   duePicker.dialog_container.classList.remove('modal')
+  }, 400)
+ }
+}
+
+let hourProperties = {
+ def: 9,
+ def_show: 'active-time',
+ max: 12,
+ member_classList: ['h_opts', 'h_opt', 'd-opt', 'disp_rf'],
+ index: 9,
+}
+
+let minuteProperties = {
+ def: 30,
+ def_show: 'active-time',
+ max: 60,
+ member_classList: ['m_opts', 'h_opt', 'd-opt', 'disp_rf'],
+ index: 30,
+}
+
+const pop1_properties = {
+ member_classList: ['priority_item', 'all_click', 'pops_item', 'padd']
+}
+
+const pop2_properties = {
+ member_classList: ['label_item', 'all_click', 'pops_item', 'padd']
+}
+
+export let duePicker = {
+ setter: now,
+ hourList: [],
+ minuteList: [],
+ yearArray: [],
+ days_Arr: [],
+ pop_1List: [],
+ pop_2List: [],
+
+ async retrieve_fxn(data) {
+  this.data = await data;
+  await this.createList(data)
+  await this.appendingData()
+
+  // await this.Time_DOM()
+  // let timeFxn = this.Time_DOM
+
+  setTimeout(async function () {
+   await duePicker.Time_DOM()
+  }, 500);
+
+ },
+
+ createList(data) {
+  const now = this.setter
+  function step_one(arr, Obj) {
+   for (let key in Obj) {
+    let li = document.createElement('li')
+    li.classList.add(...this.member_classList)
+    li.innerHTML = Obj[key].Name
+    arr.push(li)
+   }
+  }
+
+  step_one.call(pop1_properties, this.pop_1List, data.priority)
+  step_one.call(pop2_properties, this.pop_2List, data.labels)
+
+  function step_two(arr) {
+   const setter = now
+   for (let i = 0; i < this.max; i++) {
+    setter.minute(i)
+    let li = document.createElement('li')
+    li.classList.add(...this.member_classList)
+    li.setAttribute('data-value', setter.format('mm'))
+    li.innerHTML = `${setter.format('mm')}`
+
+    if (i === this.def) {
+     li.classList.add(this.def_show)
+    }
+    arr.push(li)
+   }
+  }
+
+  step_two.call(hourProperties, this.hourList)
+  step_two.call(minuteProperties, this.minuteList)
+
+  function step_three() {
+   const setter = now
+   let YEAR1 = [], YEAR2 = [], YEAR3 = []
+   let store = [YEAR1, YEAR2, YEAR3]
+
+   for (let i = 0; i < 3; i++) {
+    let result = moment().year() + i;
+    setter.set('year', result)
+    yearDetails(setter.year(), store[i])
+   }
+
+   defaults.day_containerContent = YEAR1
+
+   function yearDetails(yr, container) {
+    for (let i = 0; i < 12; i++) {
+     setter.year(yr)
+     setter.month(i)
+     let ul = document.createElement('ul');
+     ul.classList.add('months', 'disp_7-grid')
+     ul.setAttribute('data-month-mm', setter.format('MMM'))
+     ul.setAttribute('data-year-yy', setter.format('YYYY'))
+
+     for (let i = 1; i <= setter.daysInMonth(); i++) {
+      setter.date(i)
+      let li = document.createElement('li')
+      li.classList.add('day', 'disp_grid-Cnt')
+      li.setAttribute('data-month-mm', setter.month())
+      li.setAttribute('data-year-yy', setter.year())
+      li.innerHTML = setter.date()
+
+      if (setter.date() === 1) {
+       li.classList.add('one')
+       let dayIndex = setter.day()
+       li.style = `grid-area: 1 / 1 / ${dayIndex + 2} / 2`
+      }
+      duePicker.days_Arr.push(li)
+      ul.appendChild(li)
+     }
+     container.push(ul)
+    }
+   }
+   return store
+  }
+  this.yearArray = step_three()
+ },
+
+ popLists: Array.from(document.querySelectorAll('.pops')),
+
+ appendingData() {
+
+  const pops = this.popLists;
+  let popArray = [this.pop_1List, this.pop_2List]
+  label_event.Event(popArray[1])
+
+  //Appending pops
+  for (let i = 0; i < popArray.length; i++) {
+   popArray[i].forEach(member => {
+    pops[i].appendChild(member)
+   })
+  }
+ },
+
+ dialog_container: document.querySelector('.dialog_time'),
+
+ Time_DOM() {
+  const clasNAmes = {
+   cover: {
+    clasNAmes: ['cover']
+   },
+   nav: {
+    clasNAmes: ['nav', 'disp_rf', 'padd']
+   },
+   main: {
+    clasNAmes: ['main']
+   },
+   side: {
+    clasNAmes: ['side', 'disp_cf', 'padd']
+   }
+  }
+  const Dom = document.createDocumentFragment()
+  let cover = document.createElement('section')
+
+  let nav = document.createElement('nav')
+
+  let side = document.createElement('aside')
+  let main = document.createElement('main')
+
+  cover.classList.add(...clasNAmes.cover.clasNAmes)
+  nav.classList.add(...clasNAmes.nav.clasNAmes)
+  side.classList.add(...clasNAmes.side.clasNAmes)
+  main.classList.add(...clasNAmes.main.clasNAmes)
+
+  time_chambers.nav_fxn(nav)
+  time_chambers.side_fxn(side)
+  time_chambers.main_fxn(main)
+
+  let children = [nav, side, main]
+  children.forEach(member => cover.appendChild(member))
+
+  cover.appendChild(Dom)
+  this.dialog_container.appendChild(cover)
+ }
+}
+
+const time_chambers = {
+ activeName: 'active_nav',
+
+ F_classNAmes: ['Time', 'current'],
+ S_classNAmes: ['Time',],
+
+ nav_fxn(parent) {
+  let first = document.createElement('div');
+  let second = document.createElement('div');
+
+  first.innerHTML = 'Time'
+  second.innerHTML = 'Date'
+
+  first.classList.add(...this.F_classNAmes)
+  second.classList.add(...this.S_classNAmes)
+
+  this.navElements = [first, second]
+
+  parent.appendChild(first)
+  parent.appendChild(second)
+
+  defaults.nav = [first, second]
+ },
+
+ toggle_clasNAme: ['toggle_clasNAme', 'padd'],
+ due: document.querySelector('#due'),
+
+ side_fxn(parent) {
+  const setting = document.createElement('button'),
+   clear = document.createElement('button'),
+   cancel = document.createElement('button'),
+   months = document.createElement('button');
+
+  setting.innerHTML = `Set`
+  clear.innerHTML = `Clear`
+  cancel.innerHTML = `Cancel`
+  months.innerHTML = `Months`
+
+  let arr = [setting, clear, cancel]
+
+  for (let i = 0; i < arr.length; i++) {
+   arr[i].setAttribute('data-side-btn', 'auto')
+   arr[i].setAttribute('data-toggle-name', 'modal')
+   arr[i].setAttribute('data-target', 'dialog_time')
+   clicks.side_btn.push(arr[i])
+  }
+
+  clicks.validate()
+
+  setting.classList.add(...this.toggle_clasNAme)
+  clear.classList.add(...this.toggle_clasNAme)
+  cancel.classList.add(...this.toggle_clasNAme)
+  months.classList.add(...this.toggle_clasNAme)
+
+  parent.appendChild(setting)
+  parent.appendChild(clear)
+  parent.appendChild(cancel)
+  parent.appendChild(months)
+
+  months.disabled = true
+  defaults.month_btn = months
+  this.side_Parent = parent
+
+  side_buttonEvents([months])
+
+  parent.addEventListener('click', btn => {
+   if (btn.target === setting) {
+    duePicker.dialog_container.classList.toggle('add_on')
+    time_userDATA.usrDATA()
+    this.due.value = time_userDATA.dueDate
+    cargo.bool_arr = true
+    clicks.time_bool = true
+   }
+
+   if (btn.target === clear) {
+    duePicker.dialog_container.classList.toggle('add_on')
+    defaults.reset()
+    //defaults.call_def()
+    this.due.value = '';
+
+    setTimeout(function () {
+     duePicker.dialog_container.classList.remove('add_on', 'modal')
+    }, 400)
+   }
+
+   if (btn.target === cancel) {
+    duePicker.dialog_container.classList.toggle('add_on')
+    clicks.time_bool = true
+   }
+  })
+ },
+
+ sect_primaryClasNAmes: ['sect_primary', 'actie_focus'],
+ sect_secondaryClasNAmes: ['sect_secondary'],
+
+ main_fxn(parent) {
+  let sect_primary = document.createElement('section'),
+   sect_secondary = document.createElement('section');
+
+  sect_primary.classList.add(...this.sect_primaryClasNAmes)
+  sect_secondary.classList.add(...this.sect_secondaryClasNAmes)
+
+  //Sect Primary
+  sect_prim.fxn(sect_primary)
+  sect_second.fxn(sect_secondary)
+
+  let first = this.nav_events(this.navElements)
+  first([sect_primary, sect_secondary])(this.side_Parent)
+
+  parent.appendChild(sect_primary)
+  parent.appendChild(sect_secondary)
+
+  defaults.main = [sect_primary, sect_secondary]
+ },
+
+ nav_events: array_one => array_two => side_element => {
+  let clasNAmes = 'current'
+  array_one.forEach(member => {
+   member.addEventListener('click', btn => {
+    array_two[array_one.indexOf(member)].
+     scrollIntoView({ behaviior: 'smooth' })
+
+    let bool = array_one.some(member => member.classList.contains(clasNAmes))
+    if (bool) {
+     active_SHOWN(array_one, clasNAmes)
+    }
+    btn.target.classList.add(clasNAmes)
+
+    if (btn.target === array_one[1]) {
+     side_element.lastElementChild.disabled = false
+     defaults.month_bool = true
+    } else {
+     side_element.lastElementChild.disabled = true
+    }
+   })
+  })
+ }
+
+}
+
+let sect_prim = {
+ field_class: ['time_fields'],
+ meridean_am: ['meridean', 'am', 'current'],
+ meridean_pm: ['meridean', 'pm'],
+ controls_clasNAmes: ['controls'],
+ chamber_x: ['chamber', 'disp_rf', 'padd'],
+ ul_class: ['Time_digits', 'disp_rf'],
+ fields: [],
+
+ fxn(parent) {
+  let field1 = document.createElement('input'),
+   field2 = document.createElement('input')
+
+  this.fields = [field1, field2];
+
+  field1.value = `09`;
+  field2.value = `30`
+
+  let span = document.createElement('span')
+  span.innerHTML = ' : ';
+
+  /*
+    field1.classList.add(...this.field_class)
+    field1.placeholder = '09' 
+    field2.classList.add(...this.field_class)
+    field1.placeholder = '09' 
+    field1.value = `09`;
+    field2.value = `30`;
+   */
+  let fields = [field1, field2]
+
+  fields.forEach(member => {
+   //defaults.input_fields.push(member)
+   defaults.time_input.push(member)
+   member.type = 'number'
+   member.classList.add(...this.field_class)
+   member.placeholder = '00'
+  })
+
+  this.field_events('hour', field1)
+  this.field_events('minute', field2)
+
+  let meridean_primary = document.createElement('button'),
+   meridean_secondary = document.createElement('button')
+  defaults.meridean = [meridean_primary, meridean_secondary]
+
+  meridean_primary.innerHTML = `am`
+  meridean_secondary.innerHTML = `pm`
+  meridean_primary.classList.add(...this.meridean_am)
+  meridean_secondary.classList.add(...this.meridean_pm)
+  this.meridean_select([meridean_primary, meridean_secondary], 'current')
+
+  let field_chamber = document.createElement('div')
+  let hour_chamber = document.createElement('div'),
+   minute_chamber = document.createElement('div')
+
+  field_chamber.classList.add(...this.chamber_x)
+  hour_chamber.classList.add(...this.chamber_x)
+  minute_chamber.classList.add(...this.chamber_x)
+
+  let controls_hour = []
+  let controls_minute = []
+
+  for (let i = 0; i < 4; i += 1) {
+   const button = document.createElement('button')
+   button.classList.add(...this.controls_clasNAmes)
+
+   switch (i) {
+    case 0:
+     button.innerHTML = `-H`
+     controls_hour.push(button)
+     break;
+    case 1:
+     button.innerHTML = `+H`
+     controls_hour.push(button)
+     break;
+    case 2:
+     button.innerHTML = `-M`
+     controls_minute.push(button)
+     break;
+    default:
+     button.innerHTML = `+M`
+     controls_minute.push(button)
+   }
+
+  }
+
+  let ul_primary = document.createElement('ul'),
+   ul_secondary = document.createElement('ul')
+
+  ul_primary.classList.add(...this.ul_class)
+  ul_secondary.classList.add(...this.ul_class)
+
+  field_chamber.appendChild(field1)
+  field_chamber.appendChild(span)
+  field_chamber.appendChild(field2)
+  field_chamber.appendChild(meridean_primary)
+  field_chamber.appendChild(meridean_secondary)
+
+  hour_chamber.appendChild(controls_hour[0])
+  hour_chamber.appendChild(ul_primary)
+  hour_chamber.appendChild(controls_hour[1])
+  this.hourList.forEach(member => ul_primary.appendChild(member))
+
+
+  minute_chamber.appendChild(controls_minute[0])
+  minute_chamber.appendChild(ul_secondary)
+  minute_chamber.appendChild(controls_minute[1])
+  this.minuteList.forEach(member => ul_secondary.appendChild(member))
+
+  parent.appendChild(field_chamber)
+  parent.appendChild(hour_chamber)
+  parent.appendChild(minute_chamber)
+
+  this.into_View(this.hourList)
+  this.into_View(this.minuteList)
+
+  this.timeACtive_view.call(hourProperties, controls_hour, this.hourList, hourProperties.def, field1)
+  this.timeACtive_view.call(minuteProperties, controls_minute, this.minuteList, minuteProperties.def, field2)
+
+  time_userDATA.hour = field1
+  time_userDATA.minute = field2
+ },
+
+ field_events(identity, field) {
+  field.addEventListener('keyup', input => {
+   if (identity === 'hour' && input.target.value[0] > 1) {
+    input.target.value = '';
+   } else {
+    if (Number.parseInt(input.target.value[0]) === 1 && Number.parseInt(input.target.value[1]) > 1) {
+     let res = input.target.value.slice(0, 1)
+     input.target.value = res
+    }
+   }
+
+   if (identity === 'minute' && input.target.value[0] > 5) {
+    input.target.value = '';
+   }
+
+   if (!(input.target.value.length < 2)) {
+    let res = input.target.value.slice(0, 2)
+    input.target.value = res
+   }
+  })
+ },
+
+ timeACtive_view(controls, array, index_El, display) {
+  //let index = index_El
+  this.index = index_El
+  let active_NAme = 'active-time'
+
+  array.forEach(member => {
+   member.addEventListener('click', btn => {
+    display.value = btn.target.innerHTML
+    this.index = array.indexOf(member)
+    active_SHOWN(array, active_NAme)
+    btn.target.classList.add(active_NAme)
+   })
+  })
+
+  controls[0].addEventListener('click', btn => {
+   if (this.index > 0) {
+    array[this.index].classList.remove(active_NAme)
+    array[this.index - 1].classList.add(active_NAme)
+    display.value = array[this.index - 1].innerHTML
+    this.index = array.indexOf(array[this.index - 1])
+   }
+  })
+
+  controls[1].addEventListener('click', btn => {
+   if (this.index < array.length - 1) {
+    array[this.index].classList.remove(active_NAme)
+    array[this.index + 1].classList.add(active_NAme)
+    display.value = array[this.index + 1].innerHTML
+    this.index = array.indexOf(array[this.index + 1])
+   }
+  })
+ },
+
+ meridean_select(array, clasNAmes) {
+  array.forEach(member => {
+   member.addEventListener('click', btn => {
+    let bool = array.some(member => member.classList.contains(clasNAmes))
+    if (bool) {
+     active_SHOWN(array, clasNAmes)
+    }
+    btn.target.classList.add(clasNAmes)
+    time_userDATA.meridean = (btn.target.innerHTML)
+   })
+  })
+ },
+
+ into_View(array, identity) {
+  let parent = array[0].parentElement
+  setTimeout(function () {
+   if (identity === 'hour') {
+    parent.scrollBy(252, 0)
+   } else {
+    let parent = array[0].parentElement
+    parent.scrollBy(910, 0)
+   }
+  }, 200);
+ },
+
+}
+
+Object.setPrototypeOf(sect_prim, duePicker)
+
+let sect_second = {
+ days_container: ['days_container', 'disp_7-grid'],
+ day_container: ['day_container'],
+ days_clasNAme: ['days', 'disp_grid-Cnt'],
+ monthList: undefined,
+ year_btn: [],
+
+ fxn(parent) {
+  let days_container = document.createElement('ul')
+  let day_container = document.createElement('ul')
+
+  days_container.classList.add(...this.days_container)
+  day_container.classList.add(...this.day_container)
+  defaults.day_container = day_container
+
+  let now = moment()
+
+  for (let i = 0; i < 7; i++) {
+   now.day(i)
+   let li = document.createElement('li')
+   li.classList.add(...this.days_clasNAme)
+   li.innerHTML = now.format('ddd')
+   days_container.appendChild(li)
+  }
+
+  this.yearArray[0].forEach(member => {
+   day_container.appendChild(member)
+  })
+
+  let monthList = document.createElement('ul')
+  monthList.classList.add('monthList', 'disp_rf')
+  this.monthList = monthList
+
+  for (let i = 0; i < 12; i++) {
+   now.month(i)
+   let li = document.createElement('li')
+   li.classList.add('month', 'padd', 'disp_grid-Cnt')
+   li.innerHTML = now.format('MMM')
+   monthList.appendChild(li)
+  }
+
+  defaults.monthList = monthList
+
+  let div = document.createElement('div')
+  div.classList.add('date_utils')
+
+  let active_month = document.createElement('input')
+  active_month.type = 'text'
+  active_month.value = 'Jan'
+  active_month.classList.add('date_fields', 'active_month')
+  active_month.disabled = true;
+
+
+  let inputField_array = []
+  fields(inputField_array, div)
+
+  function fields(array, parent) {
+   let div = document.createElement('div')
+   div.classList.add('first_utility')
+
+   for (let i = 0; i < 3; i++) {
+    let field = document.createElement('input')
+    field.type = 'number'
+    field.classList.add('date_fields')
+
+    div.appendChild(field)
+    array.push(field)
+    defaults.input_fields.push(field)
+   }
+
+   parent.appendChild(div)
+  }
+
+  div.appendChild(active_month)
+
+  let yrButton_array = []
+  year(yrButton_array, div)
+  this.year_btn = yrButton_array
+  defaults.year_btn = yrButton_array
+
+  function year(array, parent) {
+   let div = document.createElement('div')
+   div.classList.add('second_utility')
+
+   for (let i = 0; i < 3; i++) {
+    let year = now.year() + i
+    let button = document.createElement('button')
+    button.classList.add('year', 'year_btn')
+    button.innerHTML = year
+
+    if (year === moment().year()) {
+     button.classList.add('current')
+    }
+    div.appendChild(button)
+    array.push(button)
+   }
+
+   parent.appendChild(div)
+  }
+
+  parent.appendChild(days_container)
+  parent.appendChild(day_container)
+  parent.appendChild(monthList)
+  parent.appendChild(div)
+
+  this.day_events(inputField_array, active_month)
+
+  this.year_btn.forEach(member => {
+   member.addEventListener('click', btn => {
+    active_SHOWN(this.year_btn, 'current')
+    btn.target.classList.add('current')
+    day_container.innerHTML = ''
+    inputField_array[inputField_array.length - 1].value = btn.target.innerHTML
+
+    this.yearArray[this.year_btn.indexOf(member)]
+     .forEach(member => {
+      day_container.appendChild(member)
+     })
+   })
+  })
+
+  let day_containerArray = Array.from(day_container.children)
+  const monthList_array = Array.from(this.monthList.children)
+
+  monthList_array.forEach(member => {
+   member.addEventListener('click', btn => {
+    //event.stopPropagation()
+    
+    active_month.value = btn.target.innerHTML
+    let index = monthList_array.indexOf(btn.target)
+    day_containerArray[index].scrollIntoView({ behaviior: 'smooth' })
+    pops_clear('toggle_show', member.parentElement)
+   })
+  })
+ },
+
+ day_events(array, extra) {
+  const setter = now
+
+  this.days_Arr.forEach(member => {
+   member.addEventListener('click', btn => {
+
+    let year = Number.parseInt(btn.target.dataset.yearYy)
+    let month = Number.parseInt(btn.target.dataset.monthMm)
+    let date = Number.parseInt(btn.target.innerHTML)
+
+    array[array.length - 1].value = year
+    array[array.length - 2].value = month + 1
+    array[array.length - 3].value = date
+
+    time_userDATA.date = date
+    time_userDATA.month = month
+    time_userDATA.year = year
+    //monthList
+    setter.month(month)
+    extra.value = setter.format('MMM')
+   })
+  })
+
+  this.year_btn.forEach(member => {
+   member.addEventListener('click', btn => {
+    active_SHOWN(this.year_btn, 'current')
+    btn.target.classList.add('current')
+   })
+  })
+ }
+}
+
+Object.setPrototypeOf(sect_second, duePicker)
+Object.setPrototypeOf(time_chambers, sect_second)
+
+
+function side_buttonEvents(array) {
+ let month = array[array.length - 1]
+ let counter = 1
+ month.addEventListener('click', btn => {
+  event_Toggle('toggle', 'toggle_show', sect_second.monthList)
+ })
+}
+
+const cargo = {
+ bool_ar: false
+}
+export default cargo
