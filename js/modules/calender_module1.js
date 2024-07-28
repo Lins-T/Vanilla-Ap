@@ -1,6 +1,6 @@
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
-import clicks from '../main.js'
-import moment from 'moment'
+import clicks, { moment } from '../main.js'
+//import moment from 'moment'
 const now = moment()
 //const now = moment()
 
