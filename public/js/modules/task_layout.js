@@ -10,21 +10,6 @@ async function port() {
  Lay_out.data_base = data.todo_icons[0]
 }
 
-
-const storageFacility_M0 = {
- completed: {
-  comp1: ''
- },
- 
- pending: {
-  pen1: ''
- },
- 
- trash: {
-  tsh1: ''
- }
-}
-
 export class Todo {
  static menu = undefined
  static toggle_show = 'toggle_show'

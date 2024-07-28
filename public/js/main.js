@@ -35,10 +35,12 @@ let clicks = {
 
   this.footbar.addEventListener('click', btn => {
    if (btn.target.hasAttribute('data-primary')) {
+    alert('donn')
     event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
     //this.secondaryAction(this.menuHam, this.bool)
     this.priority_btn = this.taskDialog.querySelector('[data-priority]')
     btn.target.disabled = true
+    alert('6')
    }
 
    /**
@@ -52,13 +54,15 @@ let clicks = {
   //ADDtask dialog
   this.taskDialog.addEventListener('click', btn => {
    if (btn.target.hasAttribute('data-primary')) {
+    alert('gone')
     this.data_setting()
     defaults.call_def()
     this.auxiliaryAction()
     this.field_reset()
     label_event.randzevou()
     Todo.pending_conut++
-     Todo.todo_stateContainers()
+    Todo.todo_stateContainers()
+
     event_Toggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target)
     add_task.disabled = false
    }
