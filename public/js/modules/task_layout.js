@@ -34,9 +34,6 @@ export class Todo {
  static pending_count = 0
  static trash_count = 0
  
- static b = 'r'
- static d = Todo.b
- 
  constructor(content, date, priority, label, button1, button2, menu_popup, duration) {
   this.content = content;
   this.date = date;
