@@ -39,7 +39,7 @@ export let time_userDATA = {
 
   setter.hour(hour)
   setter.minute(minute)
-  
+
   if (this.date !== undefined && this.month !== undefined) {
    setter.month(this.month)
    setter.date(this.date)
@@ -48,8 +48,8 @@ export let time_userDATA = {
    setter.date(moment().date() + 1)
   }
   setter.year(this.year)
-  
-  let from_now = setter.fromNow() 
+
+  let from_now = setter.fromNow()
   this.duration = from_now
 
   let dueDate = setter.format('ddd D MMM YYYY HH:mm a')
@@ -70,6 +70,7 @@ export const defaults = {
  monthList: undefined,
  time_input: [],
  input_fields: [],
+ activeMonth: undefined,
 
  reset() {
   let arr =
@@ -77,7 +78,6 @@ export const defaults = {
     this.nav,
     this.meridean,
     this.year_btn,
-
    ]
 
   arr.forEach(member => {
@@ -100,14 +100,18 @@ export const defaults = {
   this.input_fields.forEach(member => {
    member.value = ''
   })
+  
+  this.activeMonth.value = 'Jan'
 
   this.day_container.innerHTML = '';
   this.day_containerContent.forEach(member => {
    this.day_container.appendChild(member)
   })
+  //this.day_containerContent[0].scrollIntoView({ behavior: 'smooth'})
+  
   this.month_btn.disabled = true
   if (this.month_bool) {
-   this.monthList.style = `display: none;`
+   event_Toggle('remove', 'toggle_show', this.monthList)
   }
   this.main[0].scrollIntoView({ behavior: 'smooth' })
  },
@@ -381,7 +385,6 @@ const time_chambers = {
    if (btn.target === clear) {
     duePicker.dialog_container.classList.toggle('add_on')
     defaults.reset()
-    //defaults.call_def()
     this.due.value = '';
 
     setTimeout(function () {
@@ -423,8 +426,7 @@ const time_chambers = {
   let clasNAmes = 'current'
   array_one.forEach(member => {
    member.addEventListener('click', btn => {
-    array_two[array_one.indexOf(member)].
-     scrollIntoView({ behaviior: 'smooth' })
+    array_two[array_one.indexOf(member)].scrollIntoView({ behavior: 'smooth' })
 
     let bool = array_one.some(member => member.classList.contains(clasNAmes))
     if (bool) {
@@ -476,7 +478,6 @@ let sect_prim = {
   let fields = [field1, field2]
 
   fields.forEach(member => {
-   //defaults.input_fields.push(member)
    defaults.time_input.push(member)
    member.type = 'number'
    member.classList.add(...this.field_class)
@@ -703,7 +704,7 @@ let sect_second = {
   active_month.value = 'Jan'
   active_month.classList.add('date_fields', 'active_month')
   active_month.disabled = true;
-
+  defaults.activeMonth = active_month
 
   let inputField_array = []
   fields(inputField_array, div)
@@ -734,7 +735,7 @@ let sect_second = {
 
   function year(array, parent) {
    let div = document.createElement('div')
-   div.classList.add('second_utility')
+   div.classList.add('second_utility', 'disp_cf')
 
    for (let i = 0; i < 3; i++) {
     let year = now.year() + i
@@ -779,10 +780,10 @@ let sect_second = {
   monthList_array.forEach(member => {
    member.addEventListener('click', btn => {
     //event.stopPropagation()
-    
+
     active_month.value = btn.target.innerHTML
     let index = monthList_array.indexOf(btn.target)
-    day_containerArray[index].scrollIntoView({ behaviior: 'smooth' })
+    day_containerArray[index].scrollIntoView({ behavior: 'smooth' })
     pops_clear('toggle_show', member.parentElement)
    })
   })

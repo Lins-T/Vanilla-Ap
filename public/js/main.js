@@ -57,7 +57,8 @@ let clicks = {
     this.auxiliaryAction()
     this.field_reset()
     label_event.randzevou()
-    
+    Todo.pending_conut++
+     Todo.todo_stateContainers()
     event_Toggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target)
     add_task.disabled = false
    }
@@ -192,4 +193,4 @@ clicks.click_event()
 export default clicks
 
 import cargo, { defaults, time_userDATA } from './modules/calender_module1.js'
-import Lay_out from './modules/task_layout.js'
+import Lay_out, { Todo } from './modules/task_layout.js'

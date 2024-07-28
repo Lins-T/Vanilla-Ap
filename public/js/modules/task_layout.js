@@ -1,16 +1,42 @@
 import { _jsonFtch, time_userDATA } from './calender_module1.js'
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
 
+const spanComplete = document.querySelector('[data-completed-length]')
+const spanPending = document.querySelector('[data-pending-length]')
+const spanTrash = document.querySelector('[data-trash-length]')
+
 async function port() {
  let data = await _jsonFtch()
  Lay_out.data_base = data.todo_icons[0]
 }
 
-class Todo {
+
+const storageFacility_M0 = {
+ completed: {
+  comp1: ''
+ },
+ 
+ pending: {
+  pen1: ''
+ },
+ 
+ trash: {
+  tsh1: ''
+ }
+}
+
+export class Todo {
  static menu = undefined
  static toggle_show = 'toggle_show'
  static bool = false
 
+ static completed_count = 0
+ static pending_count = 0
+ static trash_count = 0
+ 
+ static b = 'r'
+ static d = Todo.b
+ 
  constructor(content, date, priority, label, button1, button2, menu_popup, duration) {
   this.content = content;
   this.date = date;
@@ -36,7 +62,7 @@ class Todo {
    this.check_events(btn.target, bool_arr, counter)
   })
 
-  //console.log(time_userDATA.duration)
+  Todo.pending_count++
  }
 
  check_events(target, bool_arr, counter) {
@@ -47,11 +73,17 @@ class Todo {
    target.parentElement.classList.add(this.completed)
    target.innerHTML = bool_true
    this.check = true
+   Todo.completed_count++
+   Todo.pending_count--
   } else {
    target.parentElement.classList.remove(this.completed)
    target.innerHTML = bool_false
    this.check = false
+   Todo.completed_count--
+   Todo.pending_count ++
   }
+  
+  Todo.todo_stateContainers()
  }
 
  details_fxn() {
@@ -64,17 +96,16 @@ class Todo {
 
  Button2() {
   this.button2.addEventListener('click', btn => {
-   //event.stopPropagation()
+   event.stopPropagation()
    event_Toggle('toggle', this.toggle_show, this.menu_popup)
    this.allclick(this.toggle_show, this.menu_popup)
-   //pops_clear(this.toggle_show, this.menu_popup)
   }, { capture: true })
 
   this.menu_popup.addEventListener('click', btn => {
    if (btn.target.hasAttribute('data-detail')) {
     this.details_fxn()
     let arr = [this.status, this.date, this.label, this.priority, this.duration, this.content]
-    event_Toggle('modal_S', undefined, Todo.detail_INfo(...arr))
+    event_Toggle('add', this.toggle_show, Todo.detail_INfo(...arr))
    }
 
    //if(btn.target.hasAttribute()) {}  
@@ -90,55 +121,37 @@ class Todo {
   }, { once: true })
  }
 
- static detail_INfo(pending, date, label, priority, duration, content) {
-  const Body = document.querySelector('body')
-
-  const dialog = document.createElement('dialog')
-  const div = document.createElement('div')
-  const button = document.createElement('button')
-  button.innerHTML = 'Cancel'
-
-  const ul = document.createElement('ul')
-  let ul_structure =
-   `<li class="title disp_rf padd"> 
-    <p class="title">Status</p> 
-    <p class="info_content">${pending}</p> 
-   </li>
-   <li> 
-    <p class="title"> Date </p> 
-    <p class="info_content">${date}</p> 
-   </li>
-   <li> 
-    <p class="title">Label</p> 
-    <p class="info_content">${label}</p> 
-   </li>
-   <li> 
-    <p class="title">Priority</p> 
-    <p class="info_content">${priority}</p> 
-   </li>
-   <li> 
-    <p class="title"> Duration </p> 
-    <p class="info_content">${duration}</p> 
-   </li>`
-  ul.innerHTML = ul_structure
-
-  const div1 = document.createElement('div')
-  div1.innerHTML = content
-
-  div.appendChild(button)
-  dialog.appendChild(div)
-  dialog.appendChild(ul)
-  dialog.appendChild(div1)
-
-  Body.appendChild(dialog)
-
+ static detail_INfo(status, date, label, priority, duration, content) {
+  const dialog = document.querySelector('[data-detail-dialog]')
+  const button = dialog.querySelector('[data-detail-button]')
+  const ul = dialog.querySelector('[detail_lists]')
+  const div = dialog.querySelector('[data-detail_content]')
+ 
+  const d_status = ul.querySelector('[data-status_content]')
+  d_status.innerHTML = `${status}`
+  const d_date = ul.querySelector('[data-date_content]')
+  d_date.innerHTML = `${date}`
+  const d_label = ul.querySelector('[data-label_content]')
+  d_label.innerHTML = `${label}`
+  const d_priority = ul.querySelector('[data-priority_content]')
+  d_priority.innerHTML = `${priority}`
+  const d_duration = ul.querySelector('[data-duration_content]')
+  d_duration.innerHTML = `${duration}`
+  div.innerHTML = `${content}`
+  
   button.addEventListener('click', () => {
    setTimeout(function () {
-    event_Toggle('modal_C', undefined, dialog)
+    event_Toggle('remove', Todo.toggle_show, dialog)
    }, 100);
   }, { once: true })
 
   return dialog
+ }
+ 
+ static todo_stateContainers() {
+  spanComplete.innerHTML = `${Todo.completed_count}`
+  spanPending.innerHTML = `${Todo.pending_count}`
+  spanTrash.innerHTML = `${Todo.trash_count}`
  }
 
 }
@@ -193,11 +206,11 @@ const Lay_out = {
   priority.classList.add(...this.priority_classNAme)
   this.priority_event(priority)
 
-  const date = document.createElement('button')
+  const date = document.createElement('div')
   date.classList.add(...this.date_classNAme)
   date.innerHTML = this.date
 
-  const label = document.createElement('button')
+  const label = document.createElement('div')
   label.classList.add(...this.label_classNAme)
   label.innerHTML = this.label
 
@@ -273,3 +286,6 @@ const Lay_out = {
 
 export default Lay_out
 port()
+
+
+const media = window.matchMedia('(min-width: 600px)')

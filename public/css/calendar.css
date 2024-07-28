@@ -1,35 +1,36 @@
 :root {
- --prime-green: hsl(114.7, 100%, 68.7%);
+ --prime-green: hsl(114.7,100%,56.7%);
 }
 
 @layer layout {
- @media (orientation: landscape) or (max-width: 500px)  {
+ @media  (max-width: 800px) and (min-height: 400px){
   .notice_board {
    position: sticky;
    top: 0%;
    z-index: 50;
-   > * {
-    filter: drop-shadow(0px 20px 5px hsla(163.2, 0%, 0%, 0.487) )
-   }
   }
+  
+  .nav_arr {
+   filter: drop-shadow(0px 20px 5px hsla(163.2, 0%, 0%, 0.487))
+  }
+  
  }
- 
+
  .nav_arr {
   overflow: scroll;
   padding-inline: 0.7em;
   padding-block: 1em;
   margin-inline: .7em;
-  margin-block: 1.5em;
+  margin-block-end: 1em;
   border-radius: 10px;
   display: grid;
   grid-template-areas:
    "dateToday recent recent"
    "dateToday userName toggle";
-  grid-template-columns: auto 4fr 40px;
+  grid-template-columns: max-content repeat(2, minmax(0%, fit-content(2fr)));
   gap: 0.5em;
   grid-row-gap: 0.8em;
-  background-color: hsl(163.2, 0%, 15.2%);
- /* filter: drop-shadow(0px 20px 5px hsla(163.2, 0%, 0%, 0.487) );*/
+  background-color: hsl(163.2,0%,15.7%);
  }
  
  li.currentDay {
@@ -40,7 +41,6 @@
   background-color: hsl(199.2, 0%, 4.2%);
   border-radius: 1em;
  }
- 
  
  .dateTask_item {
   padding-block: 0.8em;
@@ -54,7 +54,6 @@
  }
  
 }
-
 
 .date-no {
  font-size: 1em;
@@ -152,14 +151,17 @@
   padding-inline: 1em;
   padding-block: 1.5em;
   display: grid;
+  grid-template-columns: min-content auto;
+  /*
   grid-template-areas:
    "dateToday userName toggle"
    "dateToday recent recent";
-  grid-template-columns: minmax(200px, auto) 4fr 40px;
+   */
+ /* grid-template-columns: minmax(200px, auto) 4fr 40px;*/
   gap: 1em;
   border-radius: 0;
  }
- 
+ /*
  li.currentDay {
   grid-area: dateToday;
   padding-block: 1.5em;
@@ -205,4 +207,6 @@
   right: -5%;
   
  }
+ */
+ 
 }
