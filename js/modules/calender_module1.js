@@ -1,9 +1,7 @@
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
-import clicks, { moment } from '../main.js'
-//import moment from 'moment'
+console.log("before")
 const now = moment()
-//const now = moment()
-
+console.log("after")
 async function _jsonFtch() {
  let response = await fetch('../database.json')
  let data = await response.json()
