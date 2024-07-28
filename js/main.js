@@ -1,5 +1,5 @@
 import event_Toggle, { active_SHOWN, label_event } from './modules/dev_module1.js'
-import moment from './node_modules/moment/moment.js'
+import moment from '../node_modules/moment/moment.js'
 
 let clicks = {
  menuHam: document.querySelectorAll('[data-menu]'),
