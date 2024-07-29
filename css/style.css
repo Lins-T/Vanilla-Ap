@@ -191,19 +191,22 @@ animation;
   z-index: 98;
  }
  
- [data-task-container] {
+ .task_container {
   grid-column: auto / span 2;
+  overflow: scroll;
   position: relative;
+  transition: all 800ms;
  }
  
  [data-sleek-side] {
   width: 0;
   background: hsl(206.6, 0%, 6.6%);
+  position: absolute;
  }
  
  @media (min-width: 650px) {
   * {
-   font-size: 1.1rem;
+   font-size: 1rem;
   }
   
   .all_main {
@@ -213,16 +216,16 @@ animation;
   
   .notice_board {
    grid-area: not;
-   /* background-color: hsl(0, 0%, 26.2%);*/
   }
   
-  [data-task-container] {
+  .task_container {
    grid-area: tsk;
   }
   
   [data-sleek-side] {
    grid-area: slk;
    width: auto;
+   position: static;
   }
   
  }
@@ -509,7 +512,7 @@ animation;
   /* Utils */
   
   .foot_taskBar {
-   --vary-paddBlk: 1.2;
+   --vary-paddBlk: .5;
    --vary-paddInl: 0;
   }
   
@@ -612,11 +615,11 @@ animation;
  }
  
  .footButton.current svg {
-  fill: hsl(218, 100%, 50.7%);
+  fill: hsl(203.9,100%,50.7%);
  }
  
  .footButton svg {
-  fill: hsl(0, 1.1%, 68.7%);
+  fill: hsl(0,0.1%,59.7%);
  }
  
  .add-task svg {
@@ -759,10 +762,19 @@ animation;
   
   .footButton {
    --vary-paddBlk: 1.5;
-   --vary-paddInl: 1.4;
+   --vary-paddInl: 1;
    flex: 0 1 50px;
    align-items: center;
    justify-content: center;
+  }
+  
+  .footButton:nth-child(4) {
+   display: none;
+  }
+  
+  .footButton svg {
+   width: 18px;
+   height: 18px;
   }
  }
  
@@ -799,7 +811,6 @@ animation;
   }
  }
  
- 
  /* Tod0o */
  @scope (.todo) {
   && {
@@ -818,7 +829,6 @@ animation;
    --vary-paddInl: .25;
    --vary-paddBlk: .3;
    margin-block-end: 1em;
-   
    display: grid;
    grid-template-columns: minmax(auto, 30px) auto minmax(auto, 30px);
    grid-auto-rows: auto;
@@ -831,6 +841,7 @@ animation;
    background-color: hsl(163.2, 0%, 15.7%);
    transition: 200ms;
    z-index: 10;
+   transition: all 1s;
   }
   
   button {
@@ -911,7 +922,7 @@ animation;
   
   .todo_menuPopup {
    position: absolute;
-   top: 2%;
+   top: 0%;
    right: 10%;
    margin-inline-end: 6px;
    overflow: hidden;
@@ -936,7 +947,7 @@ animation;
   
   .menuPop_btn {
    --vary-paddInl: .7;
-   --vary-paddBlk: .85;
+   --vary-paddBlk: .7;
    width: 100%;
    justify-content: flex-start;
    gap: 1em;
@@ -1111,12 +1122,14 @@ animation;
    
    width: fit-content;
    position: absolute;
-   top: 50%;
-   left: 50%;
+   
+   top: 50svh;
+   left: 50svw;
+   
    translate: -50% -50%;
    background-color: hsl(225.8, 1.1%, 10.2%);
    z-index: 98;
-   display: none;
+   display: grid;
    grid-template-columns: max-content repeat(2, minmax(auto, max-content));
    gap: .5em;
   }
@@ -1242,6 +1255,30 @@ animation;
    animation: lbl 800ms ease-in-out both;
   }
  }
+ 
+ .deleta {
+  transition: all 500ms;
+  translate: -200px 0;
+  opacity: 0.4;
+  
+  animation: del 700ms ease-in-out both;
+ }
+  
+  
+  @keyframes del {
+   0% {
+    translate: 0px 0px;
+    opacity: 1;
+   }
+   
+  100% {
+    translate: -250px 0px;
+    opacity: 0;
+    display: none;
+   } 
+  }
+ 
+ 
 }
 
 
@@ -1256,7 +1293,7 @@ animation;
   left: 50%;
   translate: -50% -50%;
   z-index: 101;
-  background-color: hsla(236.8, 0%, 0%, 0.967);
+  background-color: hsl(236.8,0%,2.2%);
   color: white;
   font-size: 0.9rem;
  }
@@ -1277,8 +1314,8 @@ animation;
    "side navBar"
    "side main";
   grid-row-gap: 0.5em;
-  width: clamp(20rem, 21.5rem, 24rem);
-  min-height: 260px;
+  /*width: clamp(20rem, 21.5rem, 24rem);*/
+  width: 350px;
  }
  
  .padd {
@@ -1438,7 +1475,7 @@ animation;
  
  .disp_7-grid {
   display: grid;
-  grid-template-rows: repeat(7, 28px);
+  grid-template-rows: repeat(7, minmax(0%, 28px));
   grid-auto-flow: column;
   gap: 3px;
  }
@@ -1473,18 +1510,29 @@ animation;
   flex-grow: 2;
   max-width: 100%;
   height: fit-content;
-  grid-template-columns: repeat(6, 26px);
+  grid-template-columns: repeat(auto-fill, minmax(auto, 1fr));
   
-  >li {
+  
+  >li button {
+   width: 100%;
    font-size: .9em;
    font-weight: 600;
-   color: rgba(245, 245, 245, 0.712);
+   color: hsla(0,0%,87.2%,0.797);
    background-color: hsla(135, 100%, 55.7%, 0.0502);
    
    &:hover {
     background-color: hsl(109.1, 100%, 53.2%);
     color: black;
    }
+   
+   &:disabled {
+    color: rgba(181,180,180,0.497);
+   }
+  }
+ 
+  
+  .current {
+   background-color: hsl(150.7,100%,27.7%);
   }
   
   .one {
