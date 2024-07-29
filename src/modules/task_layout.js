@@ -1,4 +1,4 @@
-import clicks from '../main.js'
+import popOver_clear, { clicks } from '../main.js'
 import { _jsonFtch, time_userDATA } from './calender_module1.js'
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
 
