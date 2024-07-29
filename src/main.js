@@ -1,4 +1,5 @@
 import event_Toggle, { active_SHOWN, label_event } from './modules/dev_module1.js'
+import moment from 'moment'
 
 function popOver_clear(popover, className) {
  window.addEventListener("click", () => {
@@ -224,7 +225,7 @@ function check(field, arr, victim) {
 
 clicks.click_event()
 export default clicks
-
+export { moment }
 import cargo, { defaults, time_userDATA } from './modules/calender_module1.js'
 import Lay_out, { Todo } from './modules/task_layout.js'
 
