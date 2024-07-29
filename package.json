@@ -6,7 +6,7 @@
  "type": "module",
  "scripts": {
   "test": "jest",
-  "build": "babel src -d js",
+  "build": "babel src --out-dir js",
   "git-add-commit": "git add . && git commit -m \"Commit via npm script\"",
   "git-push": "git push Vanilla-Ap master"
  },
