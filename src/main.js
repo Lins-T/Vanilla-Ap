@@ -1,7 +1,14 @@
 import event_Toggle, { active_SHOWN, label_event } from './modules/dev_module1.js'
 
+function popOver_clear(popover, className) {
+ window.addEventListener("click", () => {
+  event_Toggle('remove', className, popover)
+ }, { once: true })
+}
+
 let clicks = {
- menuHam: document.querySelectorAll('[data-menu]'),
+ navList: document.querySelector('[data-nav-list]'),
+ menuHam: document.querySelector('[data-menu]'),
  footbar: document.querySelector('.foot_taskBar'),
  taskDialog: document.querySelector('.addTask_window'),
  bool: false,
@@ -10,6 +17,7 @@ let clicks = {
  label_list: [],
  priority_list: [],
  time_bool: false,
+ edit_bool: false,
 
  description: document.querySelector('.description'),
  due: document.querySelector('#due'),
@@ -20,18 +28,44 @@ let clicks = {
  footbTN_Nav: Array.from(document.querySelectorAll('[data-foot-btn]')),
  taskContainer: document.querySelector('[data-task-container]'),
 
+ windowIntoview(target) {
+  const media = window.matchMedia('(max-width: 850px)')
+  let element = document.querySelector(`[${target}]`)
+  if (media.matches) {
+   element.scrollIntoView({ behavior: 'smooth' })
+  }
+ },
+
  click_event() {
   const add_task = this.footbar.querySelector('[data-primary')
   //Menu
-  this.menuHam.forEach(member => {
-   member.addEventListener('click', btn => {
-    event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
-    this.bool = true;
-   })
+  let navist = undefined
+  
+  this.menuHam.addEventListener('click', btn => {
+   event.stopPropagation()
+   event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
+   this.bool = true;
+   popOver_clear(btn.target.dataset.target, btn.target.dataset.toggleName)
+  }, { capture: true })
+  
+  this.navList.addEventListener('click', btn => {
+   if (btn.target.hasAttribute( 'data-filter')) {
+   event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
+   }
   })
 
   // footbar or taskbar
-  let footbTN_Nav = this.footbTN_Nav.map(member => member.firstElementChild)
+  this.footbTN_Nav.forEach(member => {
+   member.addEventListener('click', btn => {
+    this.windowIntoview(btn.target.dataset.targetWindow)
+
+    if (btn.target.dataset.index < 2) {
+     this.footbar.firstElementChild.disabled = false
+    } else {
+     this.footbar.firstElementChild.disabled = true
+    }
+   })
+  })
 
   this.footbar.addEventListener('click', btn => {
    if (btn.target.hasAttribute('data-primary')) {
@@ -40,28 +74,26 @@ let clicks = {
     this.priority_btn = this.taskDialog.querySelector('[data-priority]')
     btn.target.disabled = true
    }
-
-   /**
-      if (btn.target.hasAttribute('data-foot-btn')) {
-      active_SHOWN(footbTN_Nav, 'current')
-      btn.target.firstElementChild.classList.add('current')
-      }
-   **/
   })
 
   //ADDtask dialog
   this.taskDialog.addEventListener('click', btn => {
    if (btn.target.hasAttribute('data-primary')) {
-    this.data_setting()
-    defaults.call_def()
+    if (!this.edit_bool) {
+     this.data_setting()
+     Todo.pending_conut++
+     Todo.todo_stateContainers()
+     add_task.disabled = false
+    } else {
+     this.edit_bool = false
+     Todo.edit(Todo.appearance)
+    }
+
+    label_event.randzevou()
     this.auxiliaryAction()
     this.field_reset()
-    label_event.randzevou()
-    Todo.pending_conut++
-    Todo.todo_stateContainers()
-
+    defaults.call_def()
     event_Toggle('remove', btn.target.dataset.toggleName, btn.target.dataset.target)
-    add_task.disabled = false
    }
 
    if (btn.target.hasAttribute('data-secondary')) {
@@ -73,6 +105,7 @@ let clicks = {
     this.field_reset()
     label_event.randzevou()
     add_task.disabled = false
+    this.edit_bool = false
    }
 
    if (btn.target.hasAttribute('data-setter-date')) {
@@ -165,7 +198,6 @@ let clicks = {
   arr.forEach(member => member.value = '')
  },
 
-
  data_setting() {
   Lay_out.description = this.description.value
   Lay_out.date = this.due.value
@@ -195,3 +227,5 @@ export default clicks
 
 import cargo, { defaults, time_userDATA } from './modules/calender_module1.js'
 import Lay_out, { Todo } from './modules/task_layout.js'
+
+
