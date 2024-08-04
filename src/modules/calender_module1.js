@@ -1,10 +1,10 @@
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import popOver_clear, { clicks } from '../main.js'
 import moment from 'moment'
-=======
+//=======
 import clicks from '../main.js'
->>>>>>> ca25ed8 (altogether anew)
+//>>>>>>> ca25ed8 (altogether anew)
 
 const now = moment()
 
