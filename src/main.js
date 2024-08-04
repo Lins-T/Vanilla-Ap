@@ -227,4 +227,4 @@ function check(field, arr, victim) {
 
 clicks.click_event()
 
-export { moment, clicks }
+export { clicks }
