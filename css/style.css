@@ -32,7 +32,7 @@ animation;
   font-size: 1rem;
   background-color: hsla(0, 1.1%, 7.2%, 1);
   width: 100svw;
-  height: 100dvh;
+  height: 100svh;
   position: relative;
   color: whitesmoke;
  }
@@ -128,7 +128,7 @@ animation;
   display: grid;
   grid-auto-flow: dense;
   grid-template-columns: repeat(3, 100%);
-  overflow: scroll;
+  overflow: hidden;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   gap: 1rem;
@@ -220,6 +220,7 @@ animation;
   
   .task_container {
    grid-area: tsk;
+   overflow: visible;
   }
   
   [data-sleek-side] {
@@ -253,8 +254,8 @@ animation;
  .addTask_window {
   background-color: hsl(0, 0%, 4.2%);
   display: grid;
-  grid-template-columns: 70px 4fr 1fr 1fr;
-  grid-template-rows: repeat(3, 30px);
+  grid-template-columns: 100px 4fr repeat(auto-fit, minmax(0%, 1fr));
+  grid-template-rows: repeat(3, minmax(0%, 30px));
   grid-template-areas:
    "tsk tsk duD duD"
    "tsk tsk pr lbl"
@@ -325,7 +326,7 @@ animation;
   body {
    display: grid;
    grid-auto-flow: column-reverse;
-   grid-template-columns: 80px auto;
+   grid-template-columns: max-content auto;
    grid-template-rows: max(100dvh);
    grid-template-areas:
     "side main";
@@ -354,16 +355,19 @@ animation;
    grid-area: all;
   }
   
+  .addTask_dialog {
+   position: absolute;
+   top: 50%;
+   left: 8%;
+   translate: -8% -50%;
+  }
+  
   .archive_window {
    grid-area: archive;
   }
   
   .accounts_window {
    grid-area: accounts;
-  }
-  
-  .sub_window {
-   /*background-color: hsl(0, 0%, 10.5%);*/
   }
   
   .foot_taskBar {
@@ -430,13 +434,13 @@ animation;
  }
  
  .archive_custom-window {
-   --vary-paddBlk: 0.8;
-   --vary-paddInl: 1;
-  }
-  
-  .empty_cutom {
-   font-size: 0.8em;
-  }
+  --vary-paddBlk: 0.8;
+  --vary-paddInl: 1;
+ }
+ 
+ .empty_cutom {
+  font-size: 0.8em;
+ }
  
  .head_hr {
   font-size: .95em;
@@ -585,8 +589,8 @@ animation;
  }
  
  .notifications {
-   fill: var(--variant_red1);
-  }
+  fill: var(--variant_red1);
+ }
  
  .mobile {
   --vary-paddBlk: .6;
@@ -605,7 +609,7 @@ animation;
  .archive_button span {
   font-size: 0.8em;
  }
-
+ 
  .footButton {
   --vary-paddBlk: 1;
   --vary-paddInl: 1.4;
@@ -615,11 +619,11 @@ animation;
  }
  
  .footButton.current svg {
-  fill: hsl(203.9,100%,50.7%);
+  fill: hsl(203.9, 100%, 50.7%);
  }
  
  .footButton svg {
-  fill: hsl(0,0.1%,59.7%);
+  fill: hsl(0, 0.1%, 59.7%);
  }
  
  .add-task svg {
@@ -635,7 +639,7 @@ animation;
   grid-area: tsk;
   border: none;
   border-bottom: 5px solid hsl(131.7, 0%, 11.5%);
-  background: #111416;
+  background: hsl(204, 12.8%, 7.6%);
   color: var(--Primary-color);
   outline: none;
   padding-block: 0.5em;
@@ -801,6 +805,17 @@ animation;
    translate: -50% -200%;
   }
  }
+ 
+ @media (min-width: 900px) {
+  .taskWindow_active {
+   
+   @starting-style {
+    opacity: 0.5;
+    translate: -8% 0%;
+   }
+  }
+ }
+ 
  
  .pops_active {
   display: flex;
@@ -1000,7 +1015,7 @@ animation;
   .menuPop_btn {
    --primary-color: hsl(225, 6.6%, 66.2%);
    color: var(--primary-color);
-
+   
    >svg {
     fill: var(--primary-color);
    }
@@ -1016,11 +1031,11 @@ animation;
    display: none;
    width: 300px;
    position: absolute;
-   top: 50%;
-   left: 50%;
+   top: 50svh;
+   left: 50svw;
    translate: -50% -50%;
    height: fit-content;
-   background-color: hsl(232.1,0%,4.7%);
+   background-color: hsl(232.1, 0%, 4.7%);
    border-radius: .5em;
    z-index: 100;
   }
@@ -1129,9 +1144,13 @@ animation;
    translate: -50% -50%;
    background-color: hsl(225.8, 1.1%, 10.2%);
    z-index: 98;
-   display: grid;
+   display: none;
    grid-template-columns: max-content repeat(2, minmax(auto, max-content));
    gap: .5em;
+  }
+  
+  &&.filter_active {
+   display: grid;
   }
   
   h4 {
@@ -1263,20 +1282,20 @@ animation;
   
   animation: del 700ms ease-in-out both;
  }
-  
-  
-  @keyframes del {
-   0% {
-    translate: 0px 0px;
-    opacity: 1;
-   }
-   
-  100% {
-    translate: -250px 0px;
-    opacity: 0;
-    display: none;
-   } 
+ 
+ 
+ @keyframes del {
+  0% {
+   translate: 0px 0px;
+   opacity: 1;
   }
+  
+  100% {
+   translate: -250px 0px;
+   opacity: 0;
+   display: none;
+  }
+ }
  
  
 }
@@ -1293,7 +1312,7 @@ animation;
   left: 50%;
   translate: -50% -50%;
   z-index: 101;
-  background-color: hsl(236.8,0%,2.2%);
+  background-color: hsl(236.8, 0%, 2.2%);
   color: white;
   font-size: 0.9rem;
  }
@@ -1517,7 +1536,7 @@ animation;
    width: 100%;
    font-size: .9em;
    font-weight: 600;
-   color: hsla(0,0%,87.2%,0.797);
+   color: hsla(0, 0%, 87.2%, 0.797);
    background-color: hsla(135, 100%, 55.7%, 0.0502);
    
    &:hover {
@@ -1526,13 +1545,13 @@ animation;
    }
    
    &:disabled {
-    color: rgba(181,180,180,0.497);
+    color: rgba(181, 180, 180, 0.497);
    }
   }
- 
+  
   
   .current {
-   background-color: hsl(150.7,100%,27.7%);
+   background-color: hsl(150.7, 100%, 27.7%);
   }
   
   .one {

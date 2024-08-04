@@ -152,61 +152,8 @@
   padding-block: 1.5em;
   display: grid;
   grid-template-columns: min-content auto;
-  /*
-  grid-template-areas:
-   "dateToday userName toggle"
-   "dateToday recent recent";
-   */
- /* grid-template-columns: minmax(200px, auto) 4fr 40px;*/
   gap: 1em;
   border-radius: 0;
  }
- /*
- li.currentDay {
-  grid-area: dateToday;
-  padding-block: 1.5em;
-  padding-inline: 1em;
-  gap: 0.5em;
-  background-color: hsl(199.2, 0%, 4.2%);
-  border-radius: 12px;
- }
- 
- .dateTask_item {
-  padding-block: 1.2em;
-  padding-inline: 0.8em;
-  background-color: hsl(210.6, 7.1%, 9.2%);
-  align-items: start;
-  justify-content: center;
-  gap: 1em;
-  border-radius: 5px;
-  white-space: nowrap;
- }
- 
- 
- .upcoming {
-  grid-area: recent;
-  gap: 1em;
-  
-  >.dateTask_item {
-   flex: 0 1 100px;
-  }
- }
- 
- .side {
-  grid-area: userName;
-  gap: 1em;
-  font-size: 1.095em;
- }
- 
- .currentDay .date-no {
-  font-size: 2.8em;
- }
- 
- .no_task {
-  top: -20%;
-  right: -5%;
-  
- }
- */
  
 }
