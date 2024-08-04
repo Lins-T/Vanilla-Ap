@@ -7,6 +7,7 @@ const spanComplete = document.querySelector('[data-completed-length]')
 const spanPending = document.querySelector('[data-pending-length]')
 const spanTrash = document.querySelector('[data-trash-length]')
 let todoCount = 0;
+let p = 'hello'
 
 async function port() {
  let data = await _jsonFtch()
