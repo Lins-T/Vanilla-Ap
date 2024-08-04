@@ -27,6 +27,7 @@ export let time_userDATA = {
  year: 2024,
  dueDate: undefined,
  duration: undefined,
+ moment_date: '',
 
  usrDATA() {
   const setter = moment()
@@ -46,9 +47,11 @@ export let time_userDATA = {
    setter.date(this.date)
   } else {
    setter.month(moment().month())
-   setter.date(moment().date() + 1)
+   setter.date(moment().date())
   }
   setter.year(this.year)
+  this.moment_date = setter.format('DD MM YYYY')
+  // console.log(this.moment_date)
 
   let from_now = setter.fromNow()
   this.duration = from_now
@@ -154,9 +157,11 @@ export let duePicker = {
  hourList: [],
  minuteList: [],
  yearArray: [],
+ yearArray_active: [],
  days_Arr: [],
  pop_1List: [],
  pop_2List: [],
+ num: 'hello',
 
  async retrieve_fxn(data) {
   this.data = await data;
@@ -214,9 +219,17 @@ export let duePicker = {
    }
 
    defaults.day_containerContent = YEAR1
+   duePicker.yearArray_active = YEAR1
 
    function yearDetails(yr, container) {
-    for (let i = 0; i < 12; i++) {
+    const now = moment()
+    let i = 0
+    if (yr === now.year()) {
+     i = now.month()
+    } else {
+     i = 0
+    }
+    for (i; i < 12; i++) {
      setter.year(yr)
      setter.month(i)
      let ul = document.createElement('ul');
@@ -240,7 +253,7 @@ export let duePicker = {
       }
 
       if (Number.parseInt(button.dataset.yearYy) === moment().year() && Number.parseInt(button.dataset.monthMm) === moment().month() && setter.date() === moment().date()) {
-        button.classList.add('current')
+       button.classList.add('current')
       }
 
       if (setter.date() === 1) {
@@ -255,8 +268,10 @@ export let duePicker = {
     }
    }
    return store
+
   }
   this.yearArray = step_three()
+  //this.yearArray_active = step_three()[0]
  },
 
  popLists: Array.from(document.querySelectorAll('.pops')),
@@ -568,8 +583,8 @@ let sect_prim = {
   parent.appendChild(hour_chamber)
   parent.appendChild(minute_chamber)
 
-  this.into_View(this.hourList)
-  this.into_View(this.minuteList)
+  //this.into_View(this.hourList)
+  //this.into_View(this.minuteList)
 
   this.timeACtive_view.call(hourProperties, controls_hour, this.hourList, hourProperties.def, field1)
   this.timeACtive_view.call(minuteProperties, controls_minute, this.minuteList, minuteProperties.def, field2)
@@ -618,6 +633,7 @@ let sect_prim = {
    if (this.index > 0) {
     array[this.index].classList.remove(active_NAme)
     array[this.index - 1].classList.add(active_NAme)
+    array[this.index - 1].scrollIntoView({ behaviour: 'smooth' })
     display.value = array[this.index - 1].innerHTML
     this.index = array.indexOf(array[this.index - 1])
    }
@@ -627,6 +643,7 @@ let sect_prim = {
    if (this.index < array.length - 1) {
     array[this.index].classList.remove(active_NAme)
     array[this.index + 1].classList.add(active_NAme)
+    array[this.index + 1].scrollIntoView({ behaviour: 'smooth' })
     display.value = array[this.index + 1].innerHTML
     this.index = array.indexOf(array[this.index + 1])
    }
@@ -710,7 +727,7 @@ let sect_second = {
 
   let active_month = document.createElement('input')
   active_month.type = 'text'
-  active_month.value = 'Jan'
+  active_month.value = duePicker.yearArray[0][0].dataset.monthMm
   active_month.classList.add('date_fields', 'active_month')
   active_month.disabled = true;
   defaults.activeMonth = active_month
@@ -776,26 +793,40 @@ let sect_second = {
     day_container.innerHTML = ''
     inputField_array[inputField_array.length - 1].value = btn.target.innerHTML
 
+    duePicker.day_containerArray = this.yearArray[this.year_btn.indexOf(member)]
+    duePicker.indexLength = duePicker.day_containerArray.length
+
     this.yearArray[this.year_btn.indexOf(member)]
      .forEach(member => {
       day_container.appendChild(member)
      })
+      this.yearArray[this.year_btn.indexOf(member)][0].scrollIntoView({ behavior: 'smooth' })
+      active_month.value = 'Jan'
    })
   })
 
-  let day_containerArray = Array.from(day_container.children)
-  const monthList_array = Array.from(this.monthList.children)
+  duePicker.day_containerArray = duePicker.yearArray[0]
+  duePicker.indexLength = duePicker.day_containerArray.length
 
+  const monthList_array = Array.from(this.monthList.children)
   monthList_array.forEach(member => {
    member.addEventListener('click', btn => {
     //event.stopPropagation()
-
     active_month.value = btn.target.innerHTML
     let index = monthList_array.indexOf(btn.target)
-    day_containerArray[index].scrollIntoView({ behavior: 'smooth' })
+    this.monthList_scroll(index)
     pops_clear('toggle_show', member.parentElement)
    })
   })
+ },
+
+ monthList_scroll(index) {
+  if (duePicker.indexLength < 12) {
+   let val = (index - (duePicker.indexLength + 2))
+   duePicker.day_containerArray[val].scrollIntoView({ behavior: 'smooth' })
+  } else {
+   duePicker.day_containerArray[index].scrollIntoView({ behavior: 'smooth' })
+  }
  },
 
  day_events(array, extra) {
@@ -845,4 +876,37 @@ function side_buttonEvents(array) {
 const cargo = {
  bool_ar: false
 }
+
 export default cargo
+
+const noticeBoard = document.querySelector('[data-notice-board]')
+
+export const notice_board = {
+ setter: moment(),
+ todayDate: noticeBoard.querySelector('[data-date-num]'),
+ todayTask_count: noticeBoard.querySelector('[data-curentday-task'),
+ today_counter: 0,
+
+ fxn_one(date) {
+  this.todayDate.innerHTML =
+   `${this.setter.format('DD')} <sub class="month_sub" data-month-name>-${this.setter.format('MMMM')}</sub>`
+ },
+
+ fxn_two(date) {
+  //console.log(date === moment().format('DD MM YYYY'))
+  if (date === moment().format('DD MM YYYY')) {
+   this.today_counter++
+   this.todayTask_count.innerHTML = `${this.today_counter} task added`
+  }
+ },
+
+ fxn_three() {
+  this.today_counter--
+  this.todayTask_count.innerHTML = `${this.today_counter} task added`
+
+  if (this.today_count === 0) {
+   this.todayTask_count.innerHTML = `No task added`
+  }
+ }
+}
+notice_board.fxn_one()
