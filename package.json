@@ -2,7 +2,7 @@
  "name": "vanila_ap",
  "version": "1.0.0",
  "description": "Task manager",
- "main": "js/index.js",
+ "main": "js/src/main.js",
  "type": "module",
  "scripts": {
   "test": "jest",
