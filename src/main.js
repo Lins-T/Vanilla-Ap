@@ -1,10 +1,9 @@
 import event_Toggle, { active_SHOWN, label_event } from './modules/dev_module1.js'
-//import moment from 'moment'
 import cargo, { defaults, time_userDATA } from './modules/calender_module1.js'
 import Lay_out, { Todo } from './modules/task_layout.js'
 
-export default function popOver_clear(popover, className) {
- window.addEventListener("click", () => {
+function popOver_clear(popover, className) {
+ window.addEventListener('pointermove', () => {
   event_Toggle('remove', className, popover)
  }, { once: true })
 }
@@ -55,12 +54,22 @@ let clicks = {
    if (btn.target.hasAttribute( 'data-filter')) {
    event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
    }
+   
+   if (btn.target.hasAttribute( 'data-share')) {
+    this.windowIntoview(btn.target.dataset.targetWindow)
+    this.footbar.firstElementChild.disabled = true
+     active_SHOWN(this.footbTN_Nav, 'current')
+    this.footbar.children[3].classList.add('current')
+    
+   }
   })
 
   // footbar or taskbar
   this.footbTN_Nav.forEach(member => {
    member.addEventListener('click', btn => {
     this.windowIntoview(btn.target.dataset.targetWindow)
+    active_SHOWN(this.footbTN_Nav, 'current')
+    btn.target.classList.add('current')
 
     if (btn.target.dataset.index < 2) {
      this.footbar.firstElementChild.disabled = false
@@ -76,6 +85,7 @@ let clicks = {
     //this.secondaryAction(this.menuHam, this.bool)
     this.priority_btn = this.taskDialog.querySelector('[data-priority]')
     btn.target.disabled = true
+    clicks.edit_bool = false
    }
   })
 
@@ -87,10 +97,7 @@ let clicks = {
      Todo.pending_conut++
      Todo.todo_stateContainers()
      add_task.disabled = false
-    } else {
-     this.edit_bool = false
-     Todo.edit(Todo.appearance)
-    }
+    } 
 
     label_event.randzevou()
     this.auxiliaryAction()
@@ -207,6 +214,7 @@ let clicks = {
   Lay_out.priority = this.priorityChoice.value
   Lay_out.label = this.labelChoice.value
   Lay_out.duration = time_userDATA.duration
+  Lay_out.moment_date = time_userDATA.moment_date
 
   Lay_out.layout(this.taskContainer)
  }
@@ -226,5 +234,8 @@ function check(field, arr, victim) {
 }
 
 clicks.click_event()
+export default clicks
 
-export { clicks }
+
+
+
