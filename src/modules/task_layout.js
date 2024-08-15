@@ -1,13 +1,13 @@
-import popOver_clear, { clicks } from '../main.js'
-import { _jsonFtch, time_userDATA } from './calender_module1.js'
+import clicks from '../main.js'
+import { _jsonFtch, time_userDATA, notice_board } from './calender_module1.js'
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
 
 const taskContainer = document.querySelector('[data-task-container]')
 const spanComplete = document.querySelector('[data-completed-length]')
 const spanPending = document.querySelector('[data-pending-length]')
+const spanBlacklist = document.querySelector('[data-blacklist-length]')
 const spanTrash = document.querySelector('[data-trash-length]')
 let todoCount = 0;
-let p = 'hello'
 
 async function port() {
  let data = await _jsonFtch()
@@ -16,7 +16,9 @@ async function port() {
 
 const storageHouse = {
  pending: {},
- completed: {}
+ completed: {},
+ blacklisk: {},
+ trash: {}
 }
 
 export class Todo {
@@ -27,23 +29,30 @@ export class Todo {
  static completed_count = 0
  static pending_count = 0
  static trash_count = 0
- 
+
  static edit = undefined
  static appearance = undefined
- 
- constructor(content, date, priority, label, button1, button2, menu_popup, duration, appearance, todoIndex)  {
+
+ constructor(
+  content, date, priority, 
+  label, button1, button2,
+  menu_popup, duration, appearance,
+  todoIndex, moment_date) {
+  
   this.content = content;
   this.date = date;
   this.priority = priority;
   this.label = label;
   this.duration = duration
-
+  
+  this.moment_date = moment_date
   this.button1 = button1
   this.button2 = button2
   this.menu_popup = menu_popup;
-  
+
   this.appearance = appearance
   this.todoIndex = todoIndex
+  
 
   this.check = false
   this.status = 'Pending'
@@ -53,10 +62,13 @@ export class Todo {
  }
 
  Button1(bool_arr) {
+  notice_board.fxn_two(this.moment_date)
+  
   let counter = 1
   this.button1.addEventListener('click', btn => {
    counter++
    this.check_events(btn.target, bool_arr, counter)
+   console.log(this)
   })
 
   Todo.pending_count++
@@ -78,10 +90,10 @@ export class Todo {
    target.innerHTML = bool_false
    this.check = false
    Todo.completed_count--
-   Todo.pending_count ++
+   Todo.pending_count++
    //delete storageHouse.completed[`key${this.todoIndex}`]
   }
-  
+
   Todo.todo_stateContainers()
  }
 
@@ -103,21 +115,20 @@ export class Todo {
   this.menu_popup.addEventListener('click', btn => {
    if (btn.target.hasAttribute('data-detail')) {
     this.details_fxn()
+
     let arr = [this.status, this.date, this.label, this.priority, this.duration, this.content]
     event_Toggle('add', this.toggle_show, Todo.detail_INfo(...arr))
    }
 
-   if(btn.target.hasAttribute('data-edit')) {
+   if (btn.target.hasAttribute('data-edit')) {
     event_Toggle('toggle', btn.target.dataset.toggleName, btn.target.dataset.target)
     this.edit_stageOne()
-    Todo.edit= this.edit_stageTwo
-    Todo.appearance = this.appearance
-   
+    this.edit_stageTwo(this.appearance)
     clicks.edit_bool = true
    }
-   
-   if(btn.target.hasAttribute('data-delete')) {
-    if (this.check === true ) {
+
+   if (btn.target.hasAttribute('data-delete')) {
+    if (this.check === true) {
      Todo.completed_count--
     } else {
      Todo.pending_count--
@@ -126,6 +137,7 @@ export class Todo {
     setTimeout(() => {
      taskContainer.removeChild(this.appearance)
     }, 1000)
+    notice_board.fxn_three()
     Todo.trash_count++
     Todo.todo_stateContainers()
    }
@@ -140,12 +152,49 @@ export class Todo {
   }, { once: true })
  }
 
+ static addTask_dialog = document.querySelector('[data-add-task-dialog]')
+ static description = Todo.addTask_dialog.querySelector('[data-description]')
+ static due = Todo.addTask_dialog.querySelector('[data-due]')
+ static priorityChoice = Todo.addTask_dialog.querySelector('[data-priority-choice]')
+ static labelChoice = Todo.addTask_dialog.querySelector('[data-label-choice]')
+ static addTask = Todo.addTask_dialog.querySelector('[data-primary]')
+
+ edit_stageOne() {
+  Todo.description.value = this.content
+  Todo.due.value = this.date
+  Todo.priorityChoice.value = this.priority
+  Todo.labelChoice.value = this.label
+ }
+
+ edit_stageTwo(appearance) {
+  const content_description = appearance.querySelector('.todo_content')
+  const dueDate = appearance.querySelector('.todo_date')
+  const todoLabel = appearance.querySelector('.todo_label')
+
+  Todo.addTask.addEventListener('click', () => {
+   this.content = Todo.description.value
+   this.date = Todo.due.value
+   this.priority = Todo.priorityChoice.value
+   this.label = Todo.labelChoice.value
+
+   content_description.innerHTML = this.content
+   dueDate.innerHTML = this.date
+   Lay_out.priority_event(appearance.querySelector('.todo_priority'), this.priority)
+
+   if (this.label === 'Not available') {
+       todoLabel.innerHTML = ''
+   } else {
+    appearance.querySelector('.todo_label').innerHTML = this.label
+   }
+  }, { once: true })
+ }
+
  static detail_INfo(status, date, label, priority, duration, content) {
   const dialog = document.querySelector('[data-detail-dialog]')
   const button = dialog.querySelector('[data-detail-button]')
   const ul = dialog.querySelector('[detail_lists]')
   const div = dialog.querySelector('[data-detail_content]')
- 
+
   const d_status = ul.querySelector('[data-status_content]')
   d_status.innerHTML = `${status}`
   const d_date = ul.querySelector('[data-date_content]')
@@ -157,7 +206,7 @@ export class Todo {
   const d_duration = ul.querySelector('[data-duration_content]')
   d_duration.innerHTML = `${duration}`
   div.innerHTML = `${content}`
-  
+
   button.addEventListener('click', () => {
    setTimeout(function () {
     event_Toggle('remove', Todo.toggle_show, dialog)
@@ -165,41 +214,7 @@ export class Todo {
   }, { once: true })
   return dialog
  }
- 
- static addTask_dialog = document.querySelector('[data-add-task-dialog]')
- static description = Todo.addTask_dialog.querySelector('[data-description]')
- static due = Todo.addTask_dialog.querySelector('[data-due]')
- static priorityChoice = Todo.addTask_dialog.querySelector('[data-priority-choice]')
- static labelChoice = Todo.addTask_dialog.querySelector('[data-label-choice]')
- 
- edit_stageOne() {
-  Todo.description.value = this.content
-  Todo.due.value = this.date
-  Todo.priorityChoice.value = this.priority
-  Todo.labelChoice.value = this.label
- }
- 
- edit_stageTwo(appearance) {
-  this.content = Todo.description.value 
-  this.date = Todo.due.value
-  this.priority = Todo.priorityChoice.value 
-  this.label = Todo.labelChoice.value
-  
-  appearance.querySelector('.todo_content').innerHTML = this.content
-  appearance.querySelector('.todo_date').innerHTML = this.date
-  Lay_out.priority_event(appearance.querySelector('.todo_priority'), this.priority)
-  
-  if(this.label === 'Not available')  {
-   appearance.querySelector('.todo_label').innerHTML = ''
-  } else {
-   appearance.querySelector('.todo_label').innerHTML = this.label 
-  }
- }
- 
- todo_delete() {
-  
- }
- 
+
  static todo_stateContainers() {
   spanComplete.innerHTML = `${Todo.completed_count}`
   spanPending.innerHTML = `${Todo.pending_count}`
@@ -216,6 +231,7 @@ const Lay_out = {
  priority: '',
  label: '',
  duration: '',
+ moment_date: '',
 
  container_classNAme: ['todo', 'padd'],
  status_classNAme: ['todo_check', 'all_click', 'disp_rf'],
@@ -281,8 +297,8 @@ const Lay_out = {
 
   const edit = document.createElement('button')
   edit.setAttribute('data-edit', 'button')
-  edit.setAttribute('data-target','addTask_dialog')
-  edit.setAttribute('data-toggle-name','taskWindow_active')
+  edit.setAttribute('data-target', 'addTask_dialog')
+  edit.setAttribute('data-toggle-name', 'taskWindow_active')
   edit.classList.add(...this.menuPop_btn)
   edit.innerHTML = `${icons.edit} <span> Edit </span>`
 
@@ -309,9 +325,16 @@ const Lay_out = {
  todo(button_Arr, menu_popup, container) {
   let priority = this.priority === '' ? 'None' : this.priority
   let label = this.label === '' ? 'Not available' : this.label
+
+  todoCount += 1
+  let _todo = 
+  new Todo(this.description, 
+  this.date, priority, 
+  label, button_Arr[0], 
+  button_Arr[1], menu_popup, 
+  this.duration, container, 
+  todoCount, this.moment_date)
   
-  todoCount+=1
-  let _todo = new Todo(this.description, this.date, priority, label, button_Arr[0], button_Arr[1], menu_popup, this.duration, container, todoCount)
   let check_arr = [this.data_base.check_false, this.data_base.check_true]
 
   _todo.Button1(check_arr)
@@ -320,11 +343,11 @@ const Lay_out = {
 
  priority_event(element, priority) {
   const arr = ['high_color', 'mid_color', 'low_color', 'none_color']
-  
-  arr.forEach( member => {
+
+  arr.forEach(member => {
    element.classList.remove(member)
   })
-  
+
   switch (priority) {
    case 'High':
     element.classList.add('high_color')

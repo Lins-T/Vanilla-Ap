@@ -3,7 +3,7 @@
  "version": "1.0.0",
  "description": "Task manager",
  "main": "js/src/main.js",
- "type": "module",
+  "type": "module",
  "scripts": {
   "test": "jest",
   "build": "swc src --out-dir js",

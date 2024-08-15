@@ -404,7 +404,7 @@ animation;
   box-shadow: 0 0 20px 2px hsla(129.3, 100%, 2.2%, 0.542);
   background-color: hsl(206.6, 0%, 8.2%);
   color: white;
-  fill: hsla(139.7, 100%, 43.2%, 0.512);
+  fill: hsl(129.3,100%,48.7%);
  }
  
  .navItems {
