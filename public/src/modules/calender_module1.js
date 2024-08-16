@@ -890,9 +890,9 @@ const noticeBoard = document.querySelector('[data-notice-board]')
 
 export const notice_board = {
 // setter: /* moment() */,
- todayDate: noticeBoard.querySelector('[data-date-num]'),
- todayTask_count: noticeBoard.querySelector('[data-curentday-task'),
- today_counter: 0,
+// todayDate: noticeBoard.querySelector('[data-date-num]'),
+// todayTask_count: noticeBoard.querySelector('[data-curentday-task'),
+ //today_counter: 0,
 
  fxn_one(date) {
   /*
