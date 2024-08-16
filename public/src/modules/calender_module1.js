@@ -4,8 +4,10 @@ import clicks from '../main.js'
 //const now = /* moment() */
 console.log('hello')
 async function _jsonFtch() {
+ /*
  let response = await fetch('../database.json')
  let data = await response.json()
+ */
 alert('done')
  let response1 = await fetch('../api/_moment.js')
 // alert(response1)
