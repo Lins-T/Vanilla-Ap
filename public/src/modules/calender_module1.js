@@ -9,7 +9,7 @@ async function _jsonFtch() {
  let data = await response.json()
 */
  let response1 = await fetch('/api/_moment.js')
-  consooe.log(response1.moment())
+  console.log(response1.moment())
  await duePicker.retrieve_fxn(data, response1)
 
  return new Promise((resolve, reject) => {
