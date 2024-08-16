@@ -2,12 +2,10 @@
  "name": "vanila_ap",
  "version": "1.0.0",
  "description": "Task manager",
- "main": "js/src/main.js",
+ "main": "src/main.js",
   "type": "module",
  "scripts": {
-  "test": "jest",
-  "git-add-commit": "git add . && git commit -m \"Commit via npm script\"",
-  "git-push": "git push Vanilla-Ap master"
+  "test": "jest"
  },
  "repository": {
   "type": "git",

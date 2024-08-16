@@ -1,20 +1,19 @@
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
 import clicks from '../main.js'
 
-//const now = moment()
-
-fetch('../../../api/_moments.js')
-.then( data => alert(data.moment))
+//const now = /* moment() */
 
 async function _jsonFtch() {
- let response = await fetch('../database.json')
+ let response = await fetch('../../database.json')
  let data = await response.json()
-
- await duePicker.retrieve_fxn(data)
+ 
+ let response1 = await fetch('../api/_moment.js')
+ 
+ await duePicker.retrieve_fxn(data, response1)
 
  return new Promise((resolve, reject) => {
   setTimeout(function () {
-   resolve(data)
+   resolve(data, resolve)
   }, 500);
  })
 }
@@ -32,8 +31,8 @@ export let time_userDATA = {
  duration: undefined,
  moment_date: '',
 
- usrDATA() {
-  const setter = moment()
+ usrDATA(moment) {
+ const setter = moment()
 
   let hour = Number.parseInt(this.hour.value)
   let minute = Number.parseInt(this.minute.value)
@@ -49,7 +48,7 @@ export let time_userDATA = {
    setter.month(this.month)
    setter.date(this.date)
   } else {
-   setter.month(moment().month())
+   setter.month( moment().month())
    setter.date(moment().date())
   }
   setter.year(this.year)
@@ -156,7 +155,8 @@ const pop2_properties = {
 }
 
 export let duePicker = {
- setter: now,
+// setter: now,
+ moment: undefined,
  hourList: [],
  minuteList: [],
  yearArray: [],
@@ -166,9 +166,11 @@ export let duePicker = {
  pop_2List: [],
  num: 'hello',
 
- async retrieve_fxn(data) {
+ async retrieve_fxn(data, moments) {
   this.data = await data;
-  await this.createList(data)
+  this.moment = moments
+  
+  await this.createList(data, moments)
   await this.appendingData()
 
   setTimeout(async function () {
@@ -177,8 +179,8 @@ export let duePicker = {
 
  },
 
- createList(data) {
-  const now = this.setter
+ createList(data, moment) {
+  const now = moment()
   function step_one(arr, Obj) {
    for (let key in Obj) {
     let li = document.createElement('li')
@@ -225,7 +227,7 @@ export let duePicker = {
    duePicker.yearArray_active = YEAR1
 
    function yearDetails(yr, container) {
-    const now = moment()
+    const now =  moment() 
     let i = 0
     if (yr === now.year()) {
      i = now.month()
@@ -251,11 +253,11 @@ export let duePicker = {
       button.setAttribute('data-year-yy', setter.year())
       button.innerHTML = setter.date()
 
-      if (Number.parseInt(button.dataset.yearYy) === moment().year() && Number.parseInt(button.dataset.monthMm) < moment().month()) {
+      if (Number.parseInt(button.dataset.yearYy) ===  moment().year() && Number.parseInt(button.dataset.monthMm) <  moment().month()) {
        button.setAttribute('disabled', 'true')
       }
 
-      if (Number.parseInt(button.dataset.yearYy) === moment().year() && Number.parseInt(button.dataset.monthMm) === moment().month() && setter.date() === moment().date()) {
+      if (Number.parseInt(button.dataset.yearYy) === moment().year() && Number.parseInt(button.dataset.monthMm) === moment().month() && setter.date() ===  moment().date()) {
        button.classList.add('current')
       }
 
@@ -295,7 +297,7 @@ export let duePicker = {
 
  dialog_container: document.querySelector('.dialog_time'),
 
- Time_DOM() {
+ Time_DOM(moment) {
   const clasNAmes = {
    cover: {
     clasNAmes: ['cover']
@@ -324,8 +326,8 @@ export let duePicker = {
   main.classList.add(...clasNAmes.main.clasNAmes)
 
   time_chambers.nav_fxn(nav)
-  time_chambers.side_fxn(side)
-  time_chambers.main_fxn(main)
+  time_chambers.side_fxn(side, moment)
+  time_chambers.main_fxn(main, moment)
 
   let children = [nav, side, main]
   children.forEach(member => cover.appendChild(member))
@@ -362,7 +364,7 @@ const time_chambers = {
  toggle_clasNAme: ['toggle_clasNAme', 'padd'],
  due: document.querySelector('#due'),
 
- side_fxn(parent) {
+ side_fxn(parent, moment) {
   const setting = document.createElement('button'),
    clear = document.createElement('button'),
    cancel = document.createElement('button'),
@@ -403,7 +405,7 @@ const time_chambers = {
   parent.addEventListener('click', btn => {
    if (btn.target === setting) {
     duePicker.dialog_container.classList.toggle('add_on')
-    time_userDATA.usrDATA()
+    time_userDATA.usrDATA(moment)
     this.due.value = time_userDATA.dueDate
     cargo.bool_arr = true
     clicks.time_bool = true
@@ -429,7 +431,7 @@ const time_chambers = {
  sect_primaryClasNAmes: ['sect_primary', 'actie_focus'],
  sect_secondaryClasNAmes: ['sect_secondary'],
 
- main_fxn(parent) {
+ main_fxn(parent, moment) {
   let sect_primary = document.createElement('section'),
    sect_secondary = document.createElement('section');
 
@@ -437,8 +439,8 @@ const time_chambers = {
   sect_secondary.classList.add(...this.sect_secondaryClasNAmes)
 
   //Sect Primary
-  sect_prim.fxn(sect_primary)
-  sect_second.fxn(sect_secondary)
+  sect_prim.fxn(sect_primary, moment)
+  sect_second.fxn(sect_secondary, moment)
 
   let first = this.nav_events(this.navElements)
   first([sect_primary, sect_secondary])(this.side_Parent)
@@ -482,7 +484,7 @@ let sect_prim = {
  ul_class: ['Time_digits', 'disp_rf'],
  fields: [],
 
- fxn(parent) {
+ fxn(parent, moment) {
   let field1 = document.createElement('input'),
    field2 = document.createElement('input')
 
@@ -688,8 +690,10 @@ let sect_second = {
  days_clasNAme: ['days', 'disp_grid-Cnt'],
  monthList: undefined,
  year_btn: [],
+ moment: undefined,
 
- fxn(parent) {
+ fxn(parent, moment) {
+  this.moment = moment
   let days_container = document.createElement('ul')
   let day_container = document.createElement('ul')
 
@@ -833,7 +837,7 @@ let sect_second = {
  },
 
  day_events(array, extra) {
-  const setter = now
+  const setter = this.moment()
 
   this.days_Arr.forEach(member => {
    member.addEventListener('click', btn => {
@@ -885,31 +889,37 @@ export default cargo
 const noticeBoard = document.querySelector('[data-notice-board]')
 
 export const notice_board = {
- setter: moment(),
+// setter: /* moment() */,
  todayDate: noticeBoard.querySelector('[data-date-num]'),
  todayTask_count: noticeBoard.querySelector('[data-curentday-task'),
  today_counter: 0,
 
  fxn_one(date) {
+  /*
   this.todayDate.innerHTML =
    `${this.setter.format('DD')} <sub class="month_sub" data-month-name>-${this.setter.format('MMMM')}</sub>`
+   */
  },
 
  fxn_two(date) {
-  //console.log(date === moment().format('DD MM YYYY'))
-  if (date === moment().format('DD MM YYYY')) {
+  //console.log(date === /* moment() */.format('DD MM YYYY'))
+  /*
+  if (date === /* moment().format('DD MM YYYY')) {
    this.today_counter++
    this.todayTask_count.innerHTML = `${this.today_counter} task added`
   }
+  */
  },
 
  fxn_three() {
+  /*
   this.today_counter--
   this.todayTask_count.innerHTML = `${this.today_counter} task added`
 
   if (this.today_count === 0) {
    this.todayTask_count.innerHTML = `No task added`
   }
+  */
  }
 }
-notice_board.fxn_one()
+//notice_board.fxn_one()
