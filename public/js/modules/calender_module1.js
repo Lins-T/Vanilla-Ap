@@ -5,8 +5,8 @@ import clicks from '../main.js'
 
 async function _jsonFtch() {
  let response1 = await fetch('../api/main.js')
- let data1 = await response1.json()
- await console.log(data1)
+// let data1 = await response1.json()
+ await console.log(response1)
 
  let response = await fetch('../../database.json')
  let data = await response.json()
