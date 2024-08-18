@@ -11,7 +11,7 @@ async function _jsonFtch() {
  let response = await fetch('../../database.json')
  let data = await response.json()
 
- await duePicker.retrieve_fxn(data, data1)
+ await duePicker.retrieve_fxn(data, data1.message)
 
  return new Promise((resolve, reject) => {
   setTimeout(function () {
