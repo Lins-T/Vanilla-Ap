@@ -8,7 +8,7 @@ async function _jsonFtch() {
  let data1 = await response1.json()
  await console.log(data1.good1.year())
  let now = await data1.good2
- await console.log(now('dd DDD MMM YYYY')
+ await console.log(now('dd DDD MMM YYYY'))
 
  let response = await fetch('../api/database.json')
  let data = await response.json()
