@@ -6,7 +6,8 @@ import clicks from '../main.js'
 async function _jsonFtch() {
  let response1 = await fetch('../api/main.js')
  let data1 = await response1.json()
- await console.log(data1.good1.year())
+ let settter = await data1.good1
+ await console.log(setter.year())
  let now = await data1.good2
  await console.log(now('dd DDD MMM YYYY'))
 
