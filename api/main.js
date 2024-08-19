@@ -5,6 +5,6 @@ console.log('Hello fxn')
 }
 
  export default function handler(req, res) {
- res.status(200).json({ mesaage: hello, info: "Hello world"})
+ res.status(200).json({ mesaage: `${hello}`, info: "Hello world"})
 }
 
