@@ -8,8 +8,8 @@ async function _jsonFtch() {
  let data1 = await response1.json()
  await console.log(response1)
  await console.log(data1)
- let hello = await window[data1.message]
- await console.log(window[data1.message])
+ let hello = new Function(data.message)
+ await console.log(hello, typeof hello))
 alert(data1.info)
 await console.log(data1.detail)
  //let response = await fetch('../api/database.json')
