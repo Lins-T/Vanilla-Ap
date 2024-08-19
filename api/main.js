@@ -1,7 +1,6 @@
 import moment from 'moment'
-
+console.log(moment)
  export default function handler(req, res) {
- const now = moment()
- res.status(200).json({ good1: moment, good2: moment()})
+ res.status(200).json({ good1: moment})
 }
 
