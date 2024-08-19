@@ -8,7 +8,7 @@ async function _jsonFtch() {
  let data1 = await response1.json()
  await console.log(response1)
  await console.log(data1)
- let hello = new Function(data.message)
+ let hello = new Function(data1.message)
  await console.log(hello, typeof hello)
 alert(data1.info)
 await console.log(data1.detail)
