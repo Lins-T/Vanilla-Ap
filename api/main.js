@@ -14,6 +14,6 @@ fxn() {
 let string = JSON.stringify(obj)
 let objSon = JSON.parse(string)
  export default function handler(req, res) {
- res.status(200).json({ detail: objSon,message: `${hello}`, info: "Infinite world"})
+ res.status(200).json({ detail: objSon,message: `${hello}`, info: "Finites"})
 }
 
