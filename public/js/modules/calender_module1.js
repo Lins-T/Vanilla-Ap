@@ -11,7 +11,7 @@ async function _jsonFtch() {
  await console.log(data1.message)
 alert(data1.info)
 alert(response1)
-await console.log(data1)
+await console.log(data1.detail)
  //let response = await fetch('../api/database.json')
  //let data = await response.json()
  //await duePicker.retrieve_fxn(data, data1.message)
