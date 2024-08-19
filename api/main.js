@@ -1,5 +1,6 @@
 import moment from 'moment'
 console.log(moment)
+
 function hello() {
 console.log('Hello fxn')
 }
@@ -9,8 +10,9 @@ const obj = {
  return moment 
  }
 }
-
+let string = JSON.stringify(obj)
+let objSon = JSON.parse(string)
  export default function handler(req, res) {
- res.status(200).json({ detail: obj,message: `${hello}`, info: "Hello world"})
+ res.status(200).json({ detail: objSon,message: `${hello}`, info: "Hello world"})
 }
 
