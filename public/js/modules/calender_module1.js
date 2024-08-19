@@ -6,12 +6,11 @@ import clicks from '../main.js'
 async function _jsonFtch() {
  let response1 = await fetch('../api/main.js')
  let data1 = await response1.json()
- await console.log(response1) 
+ await console.log(response1)
  await console.log(data1)
-// let hello = await data1.message.substring(1, data1.message.length - 1)
- await console.log(data1.message)
+ let hello = await window[data1.message]
+ await console.log(hello)
 alert(data1.info)
-alert(response1)
 await console.log(data1.detail)
  //let response = await fetch('../api/database.json')
  //let data = await response.json()
