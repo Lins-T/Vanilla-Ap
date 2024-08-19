@@ -13,7 +13,7 @@ async function _jsonFtch() {
 
  return new Promise((resolve, reject) => {
   setTimeout(function () {
-   resolve(data, resolve)
+   //resolve(data, resolve)
   }, 500);
  })
 }
