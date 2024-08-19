@@ -6,15 +6,10 @@ import clicks from '../main.js'
 async function _jsonFtch() {
  let response1 = await fetch('../api/main.js')
  let data1 = await response1.json()
- //let setter = await data1.good1
- await console.log(data1)
- //let now = await data1.good2
-// await console.log(now('dd DDD MMM YYYY'))
-
- let response = await fetch('../api/database.json')
- let data = await response.json()
-
- await duePicker.retrieve_fxn(data, data1.message)
+  await console.log(data1)
+ //let response = await fetch('../api/database.json')
+ //let data = await response.json()
+ //await duePicker.retrieve_fxn(data, data1.message)
 
  return new Promise((resolve, reject) => {
   setTimeout(function () {
