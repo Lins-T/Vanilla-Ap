@@ -1,24 +1,15 @@
 import event_Toggle, { active_SHOWN, pops_clear, label_event } from './dev_module1.js'
 import clicks from '../main.js'
 
-//const now = /* moment() */
-
+const now = moment()
 async function _jsonFtch() {
- let response1 = await fetch('../api/main.js')
- let data1 = await response1.json()
- await console.log(response1)
- await console.log(data1)
- let hello = new Function(data1.message)
- await console.log(hello, typeof hello)
-alert(data1.info)
-await console.log(data1.detail)
- //let response = await fetch('../api/database.json')
- //let data = await response.json()
- //await duePicker.retrieve_fxn(data, data1.message)
+ let response = await fetch('../api/database.json')
+ let data = await response.json()
+ await duePicker.retrieve_fxn(data)
 
  return new Promise((resolve, reject) => {
   setTimeout(function () {
-   //resolve(data, resolve)
+   resolve(data, resolve)
   }, 500);
  })
 }
@@ -36,7 +27,7 @@ export let time_userDATA = {
  duration: undefined,
  moment_date: '',
 
- usrDATA(moment) {
+ usrDATA() {
  const setter = moment()
 
   let hour = Number.parseInt(this.hour.value)
@@ -160,8 +151,7 @@ const pop2_properties = {
 }
 
 export let duePicker = {
-// setter: now,
- moment: undefined,
+ setter: now,
  hourList: [],
  minuteList: [],
  yearArray: [],
@@ -171,11 +161,10 @@ export let duePicker = {
  pop_2List: [],
  num: 'hello',
 
- async retrieve_fxn(data, moments) {
+ async retrieve_fxn(data) {
   this.data = await data;
-  this.moment = moments
-  
-  await this.createList(data, moments)
+
+  await this.createList(data)
   await this.appendingData()
 
   setTimeout(async function () {
@@ -184,7 +173,7 @@ export let duePicker = {
 
  },
 
- createList(data, moment) {
+ createList(data) {
   const now = moment()
   function step_one(arr, Obj) {
    for (let key in Obj) {
@@ -302,7 +291,7 @@ export let duePicker = {
 
  dialog_container: document.querySelector('.dialog_time'),
 
- Time_DOM(moment) {
+ Time_DOM() {
   const clasNAmes = {
    cover: {
     clasNAmes: ['cover']
@@ -331,8 +320,8 @@ export let duePicker = {
   main.classList.add(...clasNAmes.main.clasNAmes)
 
   time_chambers.nav_fxn(nav)
-  time_chambers.side_fxn(side, moment)
-  time_chambers.main_fxn(main, moment)
+  time_chambers.side_fxn(side)
+  time_chambers.main_fxn(main)
 
   let children = [nav, side, main]
   children.forEach(member => cover.appendChild(member))
@@ -369,7 +358,7 @@ const time_chambers = {
  toggle_clasNAme: ['toggle_clasNAme', 'padd'],
  due: document.querySelector('#due'),
 
- side_fxn(parent, moment) {
+ side_fxn(parent) {
   const setting = document.createElement('button'),
    clear = document.createElement('button'),
    cancel = document.createElement('button'),
@@ -436,7 +425,7 @@ const time_chambers = {
  sect_primaryClasNAmes: ['sect_primary', 'actie_focus'],
  sect_secondaryClasNAmes: ['sect_secondary'],
 
- main_fxn(parent, moment) {
+ main_fxn(parent) {
   let sect_primary = document.createElement('section'),
    sect_secondary = document.createElement('section');
 
@@ -444,8 +433,8 @@ const time_chambers = {
   sect_secondary.classList.add(...this.sect_secondaryClasNAmes)
 
   //Sect Primary
-  sect_prim.fxn(sect_primary, moment)
-  sect_second.fxn(sect_secondary, moment)
+  sect_prim.fxn(sect_primary)
+  sect_second.fxn(sect_secondary)
 
   let first = this.nav_events(this.navElements)
   first([sect_primary, sect_secondary])(this.side_Parent)
@@ -489,7 +478,7 @@ let sect_prim = {
  ul_class: ['Time_digits', 'disp_rf'],
  fields: [],
 
- fxn(parent, moment) {
+ fxn(parent) {
   let field1 = document.createElement('input'),
    field2 = document.createElement('input')
 
@@ -695,10 +684,8 @@ let sect_second = {
  days_clasNAme: ['days', 'disp_grid-Cnt'],
  monthList: undefined,
  year_btn: [],
- moment: undefined,
 
- fxn(parent, moment) {
-  this.moment = moment
+ fxn(parent) {
   let days_container = document.createElement('ul')
   let day_container = document.createElement('ul')
 
@@ -842,7 +829,7 @@ let sect_second = {
  },
 
  day_events(array, extra) {
-  const setter = this.moment()
+  const setter = moment()
 
   this.days_Arr.forEach(member => {
    member.addEventListener('click', btn => {
