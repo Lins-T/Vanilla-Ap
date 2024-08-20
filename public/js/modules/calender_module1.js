@@ -3,7 +3,7 @@ import clicks from '../main.js'
 
 const now = moment()
 async function _jsonFtch() {
- let response = await fetch('../api/database.json')
+ let response = await fetch('../../database.json')
  let data = await response.json()
  await duePicker.retrieve_fxn(data)
 
